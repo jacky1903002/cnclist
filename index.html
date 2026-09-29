@@ -843,40 +843,41 @@
       document.getElementById('stat-20262h-exp').innerText = `${exp20262hCount} 項機台擴增`;
     }
 
-    // 匯出 Roadmap 圖鑑表圖片 (PNG) - 直接生成橫向 16:9 寬螢幕圖片，絕不失真
+ // 匯出高畫質完整 Roadmap 圖片 (PNG) - 無損高畫質長圖模式
     document.getElementById('export-roadmap-image-btn').onclick = () => {
       const exportArea = document.getElementById('roadmap-export-area');
       const exportBtn = document.getElementById('export-roadmap-image-btn');
       const printTitle = document.getElementById('print-title');
 
-      exportBtn.innerText = "⏳ 圖片生成中...";
+      exportBtn.innerText = "⏳ 高畫質生成中...";
       exportBtn.disabled = true;
       printTitle.style.display = 'block';
 
-      // 1. 加入匯出模式類別（自動隱藏拖曳與刪除按鈕）
+      // 1. 進入匯出模式
       exportArea.classList.add('exporting');
 
-      // 2. 強制將匯出區域寬度撐開至 1920px (標準 16:9 橫向寬度)，確保圖片天生就是橫的
+      // 2. 恢復表格原本最舒適的自然寬度，不強行拉寬導致變形
       const originalWidth = exportArea.style.width;
       const originalMaxWidth = exportArea.style.maxWidth;
-      exportArea.style.width = "1920px";
-      exportArea.style.maxWidth = "none";
+      exportArea.style.width = "100%";
+      exportArea.style.maxWidth = "1400px"; // 設定適中的清晰閱讀寬度
 
+      // 3. 使用 4 倍高解析度渲染 (4K 級別畫質)
       html2canvas(exportArea, { 
         backgroundColor: '#ffffff', 
-        scale: 3, // 3倍高解析度，確保文字極度清晰
+        scale: 4, // 4倍超高解析度，確保放大看也完全不模糊
         logging: false,
-        windowWidth: 1920
+        useCORS: true
       }).then(canvas => {
         const image = canvas.toDataURL("image/png");
         const link = document.createElement('a');
         link.href = image;
-        link.download = `Capacity_Roadmap_Slide_${new Date().toISOString().slice(0,10)}.png`;
+        link.download = `Capacity_Roadmap_HD_${new Date().toISOString().slice(0,10)}.png`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
 
-        // 3. 還原原本樣式
+        // 4. 還原樣式
         exportArea.style.width = originalWidth;
         exportArea.style.maxWidth = originalMaxWidth;
         exportArea.classList.remove('exporting');
@@ -893,7 +894,6 @@
         exportBtn.disabled = false;
       });
     };
-
 // 匯出 Roadmap 圖鑑表圖片 (PNG) - 高畫質 4K 渲染，避免拉伸模糊
     document.getElementById('export-roadmap-image-btn').onclick = () => {
       const exportArea = document.getElementById('roadmap-export-area');

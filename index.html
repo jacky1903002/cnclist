@@ -882,27 +882,49 @@
       });
     };
 
-    document.getElementById('export-image-btn').onclick = () => {
-      const exportArea = document.getElementById('analytics-export-area');
-      const exportBtn = document.getElementById('export-image-btn');
+// 匯出 Roadmap 圖鑑表圖片 (PNG) - 高畫質 4K 渲染，避免拉伸模糊
+    document.getElementById('export-roadmap-image-btn').onclick = () => {
+      const exportArea = document.getElementById('roadmap-export-area');
+      const exportBtn = document.getElementById('export-roadmap-image-btn');
+      const printTitle = document.getElementById('print-title');
 
       exportBtn.innerText = "⏳ 圖片生成中...";
       exportBtn.disabled = true;
+      printTitle.style.display = 'block';
 
-      html2canvas(exportArea, { backgroundColor: '#ffffff', scale: 3 }).then(canvas => {
+      // 加入匯出模式類別，隱藏多餘按鈕
+      exportArea.classList.add('exporting');
+
+      // 暫時將表格寬度撐開至 16:9 基準（例如 1600px），讓它在生成時就是橫向比例
+      const originalMinWidth = exportArea.style.minWidth;
+      exportArea.style.minWidth = "1600px";
+
+      html2canvas(exportArea, { 
+        backgroundColor: '#ffffff', 
+        scale: 4, // 提升至 4 倍解析度，確保文字極度清晰不模糊
+        logging: false,
+        windowWidth: 1600
+      }).then(canvas => {
         const image = canvas.toDataURL("image/png");
         const link = document.createElement('a');
         link.href = image;
-        link.download = `Capacity_Delta_Analytics_${new Date().toISOString().slice(0,10)}.png`;
+        link.download = `Capacity_Roadmap_Report_${new Date().toISOString().slice(0,10)}.png`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
 
-        exportBtn.innerText = "📸 匯出分析圖表圖片 (PNG)";
+        // 還原樣式
+        exportArea.style.minWidth = originalMinWidth;
+        exportArea.classList.remove('exporting');
+        printTitle.style.display = 'none';
+        exportBtn.innerText = "📸 匯出 Roadmap 圖片 (PNG)";
         exportBtn.disabled = false;
       }).catch(err => {
         alert("匯出圖片失敗：" + err);
-        exportBtn.innerText = "📸 匯出分析圖表圖片 (PNG)";
+        exportArea.style.minWidth = originalMinWidth;
+        exportArea.classList.remove('exporting');
+        printTitle.style.display = 'none';
+        exportBtn.innerText = "📸 匯出 Roadmap 圖片 (PNG)";
         exportBtn.disabled = false;
       });
     };

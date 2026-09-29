@@ -169,7 +169,6 @@
       text-align: left;
     }
 
-    /* 表格標頭 Header */
     th {
       background-color: #e2e8f0;
       color: #334155;
@@ -217,9 +216,9 @@
     body:not(.read-only) th.draggable-col:active { cursor: grabbing; }
 
     td {
-      padding: 6px 14px; /* 縮小上下 padding，讓整張表更緊湊以塞進 PPT */
+      padding: 6px 14px;
       border-bottom: 1px solid var(--border-color);
-      font-size: 0.82rem; /* 微調字體大小，確保一頁 PPT 容納得下且清晰 */
+      font-size: 0.82rem;
       color: var(--text-main);
       vertical-align: middle;
     }
@@ -324,14 +323,14 @@
     .modal-input:focus { outline: none; border-color: var(--accent); }
     .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
 
-    /* 針對匯出 PNG 時的標題與外框容器修飾 */
-    #roadmap-export-wrapper {
+    /* Roadmap 匯出容器與樣式修飾 */
+    #roadmap-export-area {
       background: #ffffff;
       padding: 20px;
       border-radius: 8px;
     }
     .export-header-title {
-      display: none; /* 平常隱藏，截圖時顯示可讓 PPT 報告更有專業感 */
+      display: none;
       font-size: 1.5rem;
       font-weight: 700;
       color: #1e293b;
@@ -339,12 +338,20 @@
       border-bottom: 2px solid var(--accent);
       padding-bottom: 6px;
     }
+
+    /* 當容器處於匯出狀態時，自動隱藏左側拖曳與右側操作/刪除欄位 */
+    #roadmap-export-area.exporting .drag-handle,
+    #roadmap-export-area.exporting th:first-child,
+    #roadmap-export-area.exporting td:first-child,
+    #roadmap-export-area.exporting .action-btn,
+    #roadmap-export-area.exporting .btn-del-col {
+      display: none !important;
+    }
   </style>
 </head>
 <body class="read-only">
 
   <div class="app-container">
-    <!-- 固定頂部控制列區塊 -->
     <div class="sticky-header-wrapper" id="sticky-header">
       <header>
         <div class="brand-title">
@@ -357,13 +364,11 @@
         </div>
       </header>
 
-      <!-- 分頁導覽 -->
       <div class="nav-tabs">
         <button class="tab-btn active" onclick="switchTab('roadmap-tab', event)">📊 Capacity Roadmap 圖鑑表</button>
         <button class="tab-btn" onclick="switchTab('analytics-tab', event)">📈 機台增減動態分析</button>
       </div>
 
-      <!-- 工具列 -->
       <div class="toolbar">
         <button id="add-row-btn" class="btn btn-primary">➕ 新增資料列</button>
         <button id="add-col-btn" class="btn btn-primary">➕ 新增欄位</button>
@@ -379,13 +384,12 @@
 
     <!-- 頁面一：Roadmap 圖鑑表 -->
     <div id="roadmap-tab" class="tab-content active">
-      <div id="roadmap-export-area" style="padding: 16px; background: #ffffff;">
+      <div id="roadmap-export-area">
         <div class="export-header-title" id="print-title">2026 Enterprise Capacity Roadmap & Machine Analytics</div>
         <table id="main-roadmap-table">
           <thead>
             <tr id="table-header-row">
               <th style="width: 35px;" class="no-drag"></th>
-              <!-- 動態渲染欄位頭部 -->
             </tr>
           </thead>
           <tbody id="table-body">
@@ -839,7 +843,7 @@
       document.getElementById('stat-20262h-exp').innerText = `${exp20262hCount} 項機台擴增`;
     }
 
-    // 匯出 Roadmap 圖鑑表圖片 (PNG) - 固定為 16:9 投影片比例尺寸
+    // 匯出 Roadmap 圖鑑表圖片 (PNG) - 自動隱藏拖曳與刪除列，完美乾淨畫面
     document.getElementById('export-roadmap-image-btn').onclick = () => {
       const exportArea = document.getElementById('roadmap-export-area');
       const exportBtn = document.getElementById('export-roadmap-image-btn');
@@ -849,37 +853,35 @@
       exportBtn.disabled = true;
       printTitle.style.display = 'block';
 
-      // 暫時鎖定容器寬度以符合 33.87cm : 19.05cm (比例約為 16:9，例如 1920x1080 像素)
-      const originalWidth = exportArea.style.width;
-      exportArea.style.width = "1920px"; // 鎖定 16:9 寬度基準
+      // 加入匯出模式類別，透過 CSS 自動隱藏左側移動把手與右側操作按鈕
+      exportArea.classList.add('exporting');
 
       html2canvas(exportArea, { 
         backgroundColor: '#ffffff', 
-        scale: 2, // 1920 * 2 = 3840 4K 高畫質
-        logging: false,
-        windowWidth: 1920
+        scale: 3, 
+        logging: false 
       }).then(canvas => {
         const image = canvas.toDataURL("image/png");
         const link = document.createElement('a');
         link.href = image;
-        link.download = `Capacity_Roadmap_Slide_${new Date().toISOString().slice(0,10)}.png`;
+        link.download = `Capacity_Roadmap_Report_${new Date().toISOString().slice(0,10)}.png`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
 
-        //還原容器原本樣式
-        exportArea.style.width = originalWidth;
+        exportArea.classList.remove('exporting');
         printTitle.style.display = 'none';
         exportBtn.innerText = "📸 匯出 Roadmap 圖片 (PNG)";
         exportBtn.disabled = false;
       }).catch(err => {
         alert("匯出圖片失敗：" + err);
-        exportArea.style.width = originalWidth;
+        exportArea.classList.remove('exporting');
         printTitle.style.display = 'none';
         exportBtn.innerText = "📸 匯出 Roadmap 圖片 (PNG)";
         exportBtn.disabled = false;
       });
     };
+
     document.getElementById('export-image-btn').onclick = () => {
       const exportArea = document.getElementById('analytics-export-area');
       const exportBtn = document.getElementById('export-image-btn');
@@ -887,7 +889,7 @@
       exportBtn.innerText = "⏳ 圖片生成中...";
       exportBtn.disabled = true;
 
-      html2canvas(exportArea, { backgroundColor: '#ffffff', scale: 3.5 }).then(canvas => {
+      html2canvas(exportArea, { backgroundColor: '#ffffff', scale: 3 }).then(canvas => {
         const image = canvas.toDataURL("image/png");
         const link = document.createElement('a');
         link.href = image;

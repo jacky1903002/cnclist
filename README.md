@@ -1,2 +1,0 @@
-# cncmachine
-CNC Machine Status

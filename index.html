@@ -843,7 +843,7 @@
       document.getElementById('stat-20262h-exp').innerText = `${exp20262hCount} 項機台擴增`;
     }
 
- // 匯出高畫質 Roadmap 圖片 (PNG) - 直接暫時移除右側「操作」欄，保證乾淨
+// 匯出高畫質 Roadmap 圖片 (PNG) - 自動隱藏右側操作欄並完美裁切
     document.getElementById('export-roadmap-image-btn').onclick = () => {
       const exportArea = document.getElementById('roadmap-export-area');
       const exportBtn = document.getElementById('export-roadmap-image-btn');
@@ -853,10 +853,10 @@
       exportBtn.disabled = true;
       printTitle.style.display = 'block';
 
-      // 1. 加入匯出模式類別
+      // 1. 加入匯出模式類別（會自動套用 CSS 將操作欄與按鈕隱藏）
       exportArea.classList.add('exporting');
 
-      // 2. 直接抓取每一列的最後一個儲存格 (Th / Td)，把它們暫時從畫面抽離
+      // 2. 直接抓取每一列最後一個儲存格 (Th / Td)，暫時從 DOM 中抽離以防留白
       const actionCells = exportArea.querySelectorAll('tr th:last-child, tr td:last-child');
       const parentRows = [];
       
@@ -866,20 +866,19 @@
           element: cell,
           nextSibling: cell.nextSibling
         });
-        cell.remove(); // 直接從 DOM 中移除該欄
+        cell.remove(); 
       });
 
-      // 3. 設定適中的清晰閱讀寬度
-      const originalWidth = exportArea.style.width;
-      const originalMaxWidth = exportArea.style.maxWidth;
-      exportArea.style.width = "100%";
-      exportArea.style.maxWidth = "1400px";
+      // 3. 設定合適的橫向寬度確保版面整齊
+      const originalMinWidth = exportArea.style.minWidth;
+      exportArea.style.minWidth = "1600px";
 
       // 4. 使用 4 倍高解析度渲染
       html2canvas(exportArea, { 
         backgroundColor: '#ffffff', 
         scale: 4, 
         logging: false,
+        windowWidth: 1600,
         useCORS: true
       }).then(canvas => {
         const image = canvas.toDataURL("image/png");
@@ -890,7 +889,7 @@
         link.click();
         document.body.removeChild(link);
 
-        // 5. 截圖完成後，把剛剛移除的「操作」欄完美放回原本的位置
+        // 5. 還原：將剛剛暫時移除的「操作」欄完美放回原本位置
         parentRows.forEach(item => {
           if (item.nextSibling) {
             item.parent.insertBefore(item.element, item.nextSibling);
@@ -899,9 +898,8 @@
           }
         });
 
-        // 6. 還原容器樣式
-        exportArea.style.width = originalWidth;
-        exportArea.style.maxWidth = originalMaxWidth;
+        // 6. 還原容器與按鈕狀態
+        exportArea.style.minWidth = originalMinWidth;
         exportArea.classList.remove('exporting');
         printTitle.style.display = 'none';
         exportBtn.innerText = "📸 匯出 Roadmap 圖片 (PNG)";
@@ -918,8 +916,7 @@
           }
         });
 
-        exportArea.style.width = originalWidth;
-        exportArea.style.maxWidth = originalMaxWidth;
+        exportArea.style.minWidth = originalMinWidth;
         exportArea.classList.remove('exporting');
         printTitle.style.display = 'none';
         exportBtn.innerText = "📸 匯出 Roadmap 圖片 (PNG)";

@@ -839,7 +839,7 @@
       document.getElementById('stat-20262h-exp').innerText = `${exp20262hCount} 項機台擴增`;
     }
 
-    // 匯出 Roadmap 圖鑑表圖片 (PNG) - 優化高解析度與 PPT 呈現
+    // 匯出 Roadmap 圖鑑表圖片 (PNG) - 固定為 16:9 投影片比例尺寸
     document.getElementById('export-roadmap-image-btn').onclick = () => {
       const exportArea = document.getElementById('roadmap-export-area');
       const exportBtn = document.getElementById('export-roadmap-image-btn');
@@ -847,29 +847,39 @@
 
       exportBtn.innerText = "⏳ 圖片生成中...";
       exportBtn.disabled = true;
-      printTitle.style.display = 'block'; // 截圖時顯示標題
+      printTitle.style.display = 'block';
 
-      // 放大 scale 至 3.5 確保匯入 PPT 後放大依然十分清晰
-      html2canvas(exportArea, { backgroundColor: '#ffffff', scale: 3.5, logging: false }).then(canvas => {
+      // 暫時鎖定容器寬度以符合 33.87cm : 19.05cm (比例約為 16:9，例如 1920x1080 像素)
+      const originalWidth = exportArea.style.width;
+      exportArea.style.width = "1920px"; // 鎖定 16:9 寬度基準
+
+      html2canvas(exportArea, { 
+        backgroundColor: '#ffffff', 
+        scale: 2, // 1920 * 2 = 3840 4K 高畫質
+        logging: false,
+        windowWidth: 1920
+      }).then(canvas => {
         const image = canvas.toDataURL("image/png");
         const link = document.createElement('a');
         link.href = image;
-        link.download = `Capacity_Roadmap_For_PPT_${new Date().toISOString().slice(0,10)}.png`;
+        link.download = `Capacity_Roadmap_Slide_${new Date().toISOString().slice(0,10)}.png`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
 
-        printTitle.style.display = 'none'; // 截圖完隱藏標題
+        //還原容器原本樣式
+        exportArea.style.width = originalWidth;
+        printTitle.style.display = 'none';
         exportBtn.innerText = "📸 匯出 Roadmap 圖片 (PNG)";
         exportBtn.disabled = false;
       }).catch(err => {
         alert("匯出圖片失敗：" + err);
+        exportArea.style.width = originalWidth;
         printTitle.style.display = 'none';
         exportBtn.innerText = "📸 匯出 Roadmap 圖片 (PNG)";
         exportBtn.disabled = false;
       });
     };
-
     document.getElementById('export-image-btn').onclick = () => {
       const exportArea = document.getElementById('analytics-export-area');
       const exportBtn = document.getElementById('export-image-btn');

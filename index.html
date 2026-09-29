@@ -169,7 +169,7 @@
       text-align: left;
     }
 
-    /* 凍結表格標頭 Header */
+    /* 表格標頭 Header */
     th {
       background-color: #e2e8f0;
       color: #334155;
@@ -177,7 +177,7 @@
       font-size: 0.85rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      padding: 12px 16px;
+      padding: 10px 14px;
       border-bottom: 2px solid var(--border-color);
       position: sticky;
       top: 0;
@@ -217,9 +217,9 @@
     body:not(.read-only) th.draggable-col:active { cursor: grabbing; }
 
     td {
-      padding: 10px 16px;
+      padding: 6px 14px; /* 縮小上下 padding，讓整張表更緊湊以塞進 PPT */
       border-bottom: 1px solid var(--border-color);
-      font-size: 0.88rem;
+      font-size: 0.82rem; /* 微調字體大小，確保一頁 PPT 容納得下且清晰 */
       color: var(--text-main);
       vertical-align: middle;
     }
@@ -323,6 +323,22 @@
     }
     .modal-input:focus { outline: none; border-color: var(--accent); }
     .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
+
+    /* 針對匯出 PNG 時的標題與外框容器修飾 */
+    #roadmap-export-wrapper {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    .export-header-title {
+      display: none; /* 平常隱藏，截圖時顯示可讓 PPT 報告更有專業感 */
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 12px;
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 6px;
+    }
   </style>
 </head>
 <body class="read-only">
@@ -363,7 +379,8 @@
 
     <!-- 頁面一：Roadmap 圖鑑表 -->
     <div id="roadmap-tab" class="tab-content active">
-      <div id="roadmap-export-area">
+      <div id="roadmap-export-area" style="padding: 16px; background: #ffffff;">
+        <div class="export-header-title" id="print-title">2026 Enterprise Capacity Roadmap & Machine Analytics</div>
         <table id="main-roadmap-table">
           <thead>
             <tr id="table-header-row">
@@ -822,27 +839,32 @@
       document.getElementById('stat-20262h-exp').innerText = `${exp20262hCount} 項機台擴增`;
     }
 
-    // 匯出 Roadmap 圖鑑表圖片 (PNG)
+    // 匯出 Roadmap 圖鑑表圖片 (PNG) - 優化高解析度與 PPT 呈現
     document.getElementById('export-roadmap-image-btn').onclick = () => {
       const exportArea = document.getElementById('roadmap-export-area');
       const exportBtn = document.getElementById('export-roadmap-image-btn');
+      const printTitle = document.getElementById('print-title');
 
       exportBtn.innerText = "⏳ 圖片生成中...";
       exportBtn.disabled = true;
+      printTitle.style.display = 'block'; // 截圖時顯示標題
 
-      html2canvas(exportArea, { backgroundColor: '#ffffff', scale: 2 }).then(canvas => {
+      // 放大 scale 至 3.5 確保匯入 PPT 後放大依然十分清晰
+      html2canvas(exportArea, { backgroundColor: '#ffffff', scale: 3.5, logging: false }).then(canvas => {
         const image = canvas.toDataURL("image/png");
         const link = document.createElement('a');
         link.href = image;
-        link.download = `Capacity_Roadmap_${new Date().toISOString().slice(0,10)}.png`;
+        link.download = `Capacity_Roadmap_For_PPT_${new Date().toISOString().slice(0,10)}.png`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
 
+        printTitle.style.display = 'none'; // 截圖完隱藏標題
         exportBtn.innerText = "📸 匯出 Roadmap 圖片 (PNG)";
         exportBtn.disabled = false;
       }).catch(err => {
         alert("匯出圖片失敗：" + err);
+        printTitle.style.display = 'none';
         exportBtn.innerText = "📸 匯出 Roadmap 圖片 (PNG)";
         exportBtn.disabled = false;
       });
@@ -855,7 +877,7 @@
       exportBtn.innerText = "⏳ 圖片生成中...";
       exportBtn.disabled = true;
 
-      html2canvas(exportArea, { backgroundColor: '#ffffff', scale: 2 }).then(canvas => {
+      html2canvas(exportArea, { backgroundColor: '#ffffff', scale: 3.5 }).then(canvas => {
         const image = canvas.toDataURL("image/png");
         const link = document.createElement('a');
         link.href = image;

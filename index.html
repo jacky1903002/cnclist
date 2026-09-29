@@ -843,7 +843,7 @@
       document.getElementById('stat-20262h-exp').innerText = `${exp20262hCount} 項機台擴增`;
     }
 
- // 匯出高畫質 Roadmap 圖片 (PNG) - 自動隱藏右側「操作」欄位
+ // 匯出高畫質 Roadmap 圖片 (PNG) - 直接暫時移除右側「操作」欄，保證乾淨
     document.getElementById('export-roadmap-image-btn').onclick = () => {
       const exportArea = document.getElementById('roadmap-export-area');
       const exportBtn = document.getElementById('export-roadmap-image-btn');
@@ -853,15 +853,20 @@
       exportBtn.disabled = true;
       printTitle.style.display = 'block';
 
-      // 1. 加入匯出模式類別（隱藏編輯按鈕等）
+      // 1. 加入匯出模式類別
       exportArea.classList.add('exporting');
 
-      // 2. 自動將表格中最後一個欄位（即右側紅框「操作」欄）暫時隱藏
-      // 假設您的表格為 table，選取每一列的最後一個儲存格 (Th / Td)
+      // 2. 直接抓取每一列的最後一個儲存格 (Th / Td)，把它們暫時從畫面抽離
       const actionCells = exportArea.querySelectorAll('tr th:last-child, tr td:last-child');
+      const parentRows = [];
+      
       actionCells.forEach(cell => {
-        cell.dataset.originalDisplay = cell.style.display;
-        cell.style.display = 'none'; // 暫時隱藏
+        parentRows.push({
+          parent: cell.parentNode,
+          element: cell,
+          nextSibling: cell.nextSibling
+        });
+        cell.remove(); // 直接從 DOM 中移除該欄
       });
 
       // 3. 設定適中的清晰閱讀寬度
@@ -885,9 +890,13 @@
         link.click();
         document.body.removeChild(link);
 
-        // 5. 還原右側「操作」欄位顯示狀態
-        actionCells.forEach(cell => {
-          cell.style.display = cell.dataset.originalDisplay || '';
+        // 5. 截圖完成後，把剛剛移除的「操作」欄完美放回原本的位置
+        parentRows.forEach(item => {
+          if (item.nextSibling) {
+            item.parent.insertBefore(item.element, item.nextSibling);
+          } else {
+            item.parent.appendChild(item.element);
+          }
         });
 
         // 6. 還原容器樣式
@@ -900,10 +909,15 @@
       }).catch(err => {
         alert("匯出圖片失敗：" + err);
         
-        // 發生錯誤也記得還原欄位
-        actionCells.forEach(cell => {
-          cell.style.display = cell.dataset.originalDisplay || '';
+        // 發生錯誤也要記得把欄位放回去
+        parentRows.forEach(item => {
+          if (item.nextSibling) {
+            item.parent.insertBefore(item.element, item.nextSibling);
+          } else {
+            item.parent.appendChild(item.element);
+          }
         });
+
         exportArea.style.width = originalWidth;
         exportArea.style.maxWidth = originalMaxWidth;
         exportArea.classList.remove('exporting');

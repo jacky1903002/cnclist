@@ -843,41 +843,54 @@
       document.getElementById('stat-20262h-exp').innerText = `${exp20262hCount} 項機台擴增`;
     }
 
- // 匯出高畫質完整 Roadmap 圖片 (PNG) - 無損高畫質長圖模式
+ // 匯出高畫質 Roadmap 圖片 (PNG) - 自動隱藏右側「操作」欄位
     document.getElementById('export-roadmap-image-btn').onclick = () => {
       const exportArea = document.getElementById('roadmap-export-area');
       const exportBtn = document.getElementById('export-roadmap-image-btn');
       const printTitle = document.getElementById('print-title');
 
-      exportBtn.innerText = "⏳ 高畫質生成中...";
+      exportBtn.innerText = "⏳ 圖片生成中...";
       exportBtn.disabled = true;
       printTitle.style.display = 'block';
 
-      // 1. 進入匯出模式
+      // 1. 加入匯出模式類別（隱藏編輯按鈕等）
       exportArea.classList.add('exporting');
 
-      // 2. 恢復表格原本最舒適的自然寬度，不強行拉寬導致變形
+      // 2. 自動將表格中最後一個欄位（即右側紅框「操作」欄）暫時隱藏
+      // 假設您的表格為 table，選取每一列的最後一個儲存格 (Th / Td)
+      const actionCells = exportArea.querySelectorAll('tr th:last-child, tr td:last-child');
+      actionCells.forEach(cell => {
+        cell.dataset.originalDisplay = cell.style.display;
+        cell.style.display = 'none'; // 暫時隱藏
+      });
+
+      // 3. 設定適中的清晰閱讀寬度
       const originalWidth = exportArea.style.width;
       const originalMaxWidth = exportArea.style.maxWidth;
       exportArea.style.width = "100%";
-      exportArea.style.maxWidth = "1400px"; // 設定適中的清晰閱讀寬度
+      exportArea.style.maxWidth = "1400px";
 
-      // 3. 使用 4 倍高解析度渲染 (4K 級別畫質)
+      // 4. 使用 4 倍高解析度渲染
       html2canvas(exportArea, { 
         backgroundColor: '#ffffff', 
-        scale: 4, // 4倍超高解析度，確保放大看也完全不模糊
+        scale: 4, 
         logging: false,
         useCORS: true
       }).then(canvas => {
         const image = canvas.toDataURL("image/png");
         const link = document.createElement('a');
         link.href = image;
-        link.download = `Capacity_Roadmap_HD_${new Date().toISOString().slice(0,10)}.png`;
+        link.download = `Capacity_Roadmap_Clean_${new Date().toISOString().slice(0,10)}.png`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
 
-        // 4. 還原樣式
+        // 5. 還原右側「操作」欄位顯示狀態
+        actionCells.forEach(cell => {
+          cell.style.display = cell.dataset.originalDisplay || '';
+        });
+
+        // 6. 還原容器樣式
         exportArea.style.width = originalWidth;
         exportArea.style.maxWidth = originalMaxWidth;
         exportArea.classList.remove('exporting');
@@ -886,6 +899,11 @@
         exportBtn.disabled = false;
       }).catch(err => {
         alert("匯出圖片失敗：" + err);
+        
+        // 發生錯誤也記得還原欄位
+        actionCells.forEach(cell => {
+          cell.style.display = cell.dataset.originalDisplay || '';
+        });
         exportArea.style.width = originalWidth;
         exportArea.style.maxWidth = originalMaxWidth;
         exportArea.classList.remove('exporting');

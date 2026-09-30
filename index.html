@@ -49,7 +49,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       border-bottom: 1px solid var(--border-color);
       padding-bottom: 12px;
     }
@@ -75,6 +75,21 @@
       font-size: 1.4rem;
       font-weight: 700;
       color: var(--text-main);
+    }
+
+    /* 上次更新時間標籤樣式 */
+    .last-update-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      background: #e2e8f0;
+      padding: 4px 12px;
+      border-radius: 6px;
+      width: fit-content;
+      font-weight: 600;
     }
 
     .auth-box {
@@ -362,6 +377,11 @@
         </div>
       </header>
 
+      <!-- 上次更新時間記錄區塊 -->
+      <div class="last-update-bar" id="last-update-bar">
+        <span>⏱️ 上次更新時間：</span><span id="last-update-time" style="color: var(--text-main);">-</span>
+      </div>
+
       <div class="nav-tabs">
         <button class="tab-btn active" onclick="switchTab('roadmap-tab', event)">📊 Capacity Roadmap 圖鑑表</button>
         <button class="tab-btn" onclick="switchTab('analytics-tab', event)">📈 機台增減動態分析</button>
@@ -531,6 +551,7 @@
     const authBtn = document.getElementById('auth-btn');
     const authStatus = document.getElementById('auth-status');
     const loginModal = document.getElementById('login-modal');
+    const lastUpdateTimeEl = document.getElementById('last-update-time');
 
     function updateStickyPosition() {
       const headerHeight = document.getElementById('sticky-header').offsetHeight;
@@ -550,11 +571,17 @@
         if (data.columns) {
           columns = data.columns;
         }
+        if (data.updatedAt) {
+          lastUpdateTimeEl.innerText = data.updatedAt;
+        } else {
+          lastUpdateTimeEl.innerText = "尚未記錄";
+        }
         renderTableHeader();
         renderTable();
         renderAnalytics();
       } else {
         roadmapData = initialData;
+        lastUpdateTimeEl.innerText = "預設資料";
         renderTableHeader();
         renderTable();
         renderAnalytics();
@@ -569,7 +596,9 @@
         return;
       }
       try {
-        await setDoc(docRef, { list: data, columns: cols });
+        const nowStr = new Date().toLocaleString('zh-TW', { hour12: false });
+        await setDoc(docRef, { list: data, columns: cols, updatedAt: nowStr });
+        lastUpdateTimeEl.innerText = nowStr;
       } catch (e) {
         console.error("雲端同步失敗: ", e);
         alert(`資料儲存至雲端失敗：${e.message}`);
@@ -1087,7 +1116,6 @@
     // Excel (.xlsx) 匯出功能
     document.getElementById('export-excel-btn').onclick = () => {
       try {
-        // 準備要匯出的表頭（過濾掉 action 操作欄）
         const activeCols = columns.filter(c => c.key !== 'action');
         const headers = activeCols.map(c => c.label);
         
@@ -1103,7 +1131,6 @@
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Capacity Roadmap");
 
-        // 自動調整欄位寬度
         const colWidths = headers.map(h => ({ wch: Math.max(h.length * 2, 15) }));
         worksheet['!cols'] = colWidths;
 
@@ -1155,7 +1182,6 @@
             return;
           }
 
-          // 動態建立自訂欄位結構
           const newColumns = [
             { key: 'material', label: jsonRows[0][matIdx] || 'Material', width: '15%' },
             { key: 'process', label: jsonRows[0][procIdx] || 'Process / Machine', width: '25%' }

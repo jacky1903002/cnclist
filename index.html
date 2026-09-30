@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Enterprise Capacity Roadmap & Machine Analytics</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- SheetJS 引入，用於支援 .xlsx 檔案匯入與匯出 -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <style>
     :root {
       --bg-color: #f1f5f9;
@@ -368,13 +370,14 @@
       <div class="toolbar">
         <button id="add-row-btn" class="btn btn-primary">➕ 新增資料列</button>
         <button id="add-col-btn" class="btn btn-primary">➕ 新增欄位</button>
-        <button id="import-csv-btn" class="btn btn-success">📥 匯入 CSV</button>
-        <button id="export-roadmap-image-btn" class="btn btn-success">📸 匯出 Roadmap 圖片 (PNG)</button>
+        <button id="export-excel-btn" class="btn btn-success">📊 匯出 Excel (.xlsx)</button>
+        <button id="import-excel-btn" class="btn btn-success">📥 匯入 Excel (.xlsx)</button>
+        <button id="export-roadmap-image-btn" class="btn">📸 匯出 Roadmap 圖片 (PNG)</button>
         <button id="export-json-btn" class="btn">💾 備份 JSON</button>
         <button id="import-btn" class="btn">📤 匯入 JSON 備份</button>
         <button id="reset-btn" class="btn btn-danger">🔄 重置預設資料</button>
         <input type="file" id="import-file-input" accept=".json" style="display: none;">
-        <input type="file" id="import-csv-input" accept=".csv" style="display: none;">
+        <input type="file" id="import-excel-input" accept=".xlsx, .xls" style="display: none;">
       </div>
     </div>
 
@@ -1081,98 +1084,131 @@
       reader.readAsText(file);
     };
 
-    const importCsvBtn = document.getElementById('import-csv-btn');
-    const importCsvInput = document.getElementById('import-csv-input');
+    // Excel (.xlsx) 匯出功能
+    document.getElementById('export-excel-btn').onclick = () => {
+      try {
+        // 準備要匯出的表頭（過濾掉 action 操作欄）
+        const activeCols = columns.filter(c => c.key !== 'action');
+        const headers = activeCols.map(c => c.label);
+        
+        const excelRows = roadmapData.map(row => {
+          const obj = {};
+          activeCols.forEach(col => {
+            obj[col.label] = row[col.key] || '';
+          });
+          return obj;
+        });
 
-    importCsvBtn.onclick = () => {
-      if (!auth.currentUser) {
-        alert("權限不足：必須登入管理員帳號才能匯入 CSV！");
-        return;
+        const worksheet = XLSX.utils.json_to_sheet(excelRows, { header: headers });
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Capacity Roadmap");
+
+        // 自動調整欄位寬度
+        const colWidths = headers.map(h => ({ wch: Math.max(h.length * 2, 15) }));
+        worksheet['!cols'] = colWidths;
+
+        XLSX.writeFile(workbook, `Capacity_Roadmap_${new Date().toISOString().slice(0,10)}.xlsx`);
+      } catch (err) {
+        alert("匯出 Excel 失敗：" + err.message);
       }
-      importCsvInput.click();
     };
 
-    importCsvInput.onchange = (e) => {
+    // Excel (.xlsx) 匯入功能
+    const importExcelBtn = document.getElementById('import-excel-btn');
+    const importExcelInput = document.getElementById('import-excel-input');
+
+    importExcelBtn.onclick = () => {
+      if (!auth.currentUser) {
+        alert("權限不足：必須登入管理員帳號才能匯入 Excel！");
+        return;
+      }
+      importExcelInput.click();
+    };
+
+    importExcelInput.onchange = (e) => {
       const file = e.target.files[0];
       if (!file) return;
 
       const reader = new FileReader();
       reader.onload = (event) => {
         try {
-          const text = event.target.result;
-          const rows = parseCSV(text);
-          if (rows.length < 2) {
-            alert("CSV 內容無有效數據！");
+          const data = new Uint8Array(event.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheetName];
+          const jsonRows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+          if (jsonRows.length < 2) {
+            alert("Excel 檔案內容無有效數據！");
             return;
           }
 
-          const headers = rows[0].map(h => h.trim().toLowerCase());
-          const matIdx = headers.findIndex(h => h.includes('material'));
-          const procIdx = headers.findIndex(h => h.includes('process') || h.includes('machine'));
-          const y2025Idx = headers.findIndex(h => h.includes('2025'));
-          const y2026Idx = headers.findIndex(h => h.includes('2026') && !h.includes('2h'));
-          const y20262hIdx = headers.findIndex(h => h.includes('2026 2h') || h.includes('2026_2h') || h.includes('2h'));
+          const headerRow = jsonRows[0].map(h => String(h).trim().toLowerCase());
+          const matIdx = headerRow.findIndex(h => h.includes('material'));
+          const procIdx = headerRow.findIndex(h => h.includes('process') || h.includes('machine'));
+          const y2025Idx = headerRow.findIndex(h => h.includes('2025'));
+          const y2026Idx = headerRow.findIndex(h => h.includes('2026') && !h.includes('2h'));
+          const y20262hIdx = headerRow.findIndex(h => h.includes('2026 2h') || h.includes('2026_2h') || h.includes('2h'));
+
+          if (matIdx === -1 || procIdx === -1) {
+            alert("Excel 標頭無法辨識必要的欄位（需包含 Material 與 Process / Machine）。");
+            return;
+          }
+
+          // 動態建立自訂欄位結構
+          const newColumns = [
+            { key: 'material', label: jsonRows[0][matIdx] || 'Material', width: '15%' },
+            { key: 'process', label: jsonRows[0][procIdx] || 'Process / Machine', width: '25%' }
+          ];
+
+          const extraColMap = [];
+          jsonRows[0].forEach((colName, idx) => {
+            if (idx !== matIdx && idx !== procIdx && colName) {
+              const key = 'col_' + idx + '_' + Date.now();
+              newColumns.push({ key: key, label: String(colName).trim(), width: '20%' });
+              extraColMap.push({ index: idx, key: key });
+            }
+          });
+
+          newColumns.push({ key: 'action', label: '操作', width: '5%', noDrag: true });
 
           const parsedList = [];
-          for (let i = 1; i < rows.length; i++) {
-            const row = rows[i];
-            if (!row || row.length === 0 || (row.length === 1 && !row[0].trim())) continue;
+          for (let i = 1; i < jsonRows.length; i++) {
+            const row = jsonRows[i];
+            if (!row || row.length === 0) continue;
 
-            parsedList.push({
-              material: matIdx !== -1 && row[matIdx] ? row[matIdx].trim() : '',
-              process: procIdx !== -1 && row[procIdx] ? row[procIdx].trim() : '',
-              y2025: y2025Idx !== -1 && row[y2025Idx] ? row[y2025Idx].trim() : '',
-              y2026: y2026Idx !== -1 && row[y2026Idx] ? row[y2026Idx].trim() : '',
-              y2026_2h: y20262hIdx !== -1 && row[y20262hIdx] ? row[y20262hIdx].trim() : ''
+            const rowObj = {
+              material: row[matIdx] !== undefined ? String(row[matIdx]).trim() : '',
+              process: row[procIdx] !== undefined ? String(row[procIdx]).trim() : '',
+              y2025: y2025Idx !== -1 && row[y2025Idx] !== undefined ? String(row[y2025Idx]).trim() : '',
+              y2026: y2026Idx !== -1 && row[y2026Idx] !== undefined ? String(row[y2026Idx]).trim() : '',
+              y2026_2h: y20262hIdx !== -1 && row[y20262hIdx] !== undefined ? String(row[y20262hIdx]).trim() : ''
+            };
+
+            extraColMap.forEach(extra => {
+              rowObj[extra.key] = row[extra.index] !== undefined ? String(row[extra.index]).trim() : '';
             });
+
+            if (rowObj.material || rowObj.process) {
+              parsedList.push(rowObj);
+            }
           }
 
           if (parsedList.length > 0) {
             roadmapData = parsedList;
+            columns = newColumns;
             saveToFirestore(roadmapData, columns);
-            alert(`成功匯入 ${parsedList.length} 筆 CSV 資料！`);
+            alert(`成功從 Excel 匯入 ${parsedList.length} 筆資料與自訂欄位！`);
           } else {
-            alert("未能成功解析出資料，請確認 CSV 格式。");
+            alert("未能成功解析出有效資料列。");
           }
         } catch (err) {
-          alert("解析 CSV 檔案時出錯：" + err.message);
+          alert("讀取 Excel 檔案時發生錯誤：" + err.message);
         }
-        importCsvInput.value = '';
+        importExcelInput.value = '';
       };
-      reader.readAsText(file);
+      reader.readAsArrayBuffer(file);
     };
-
-    function parseCSV(text) {
-      let p = '', c = '', r = [];
-      let q = false;
-      let row = [''];
-      for (let i = 0; i < text.length; i++) {
-        c = text[i];
-        p = text[i - 1];
-        if (c === '"') {
-          if (q && text[i + 1] === '"') {
-            row[row.length - 1] += '"';
-            i++;
-          } else {
-            q = !q;
-          }
-        } else if (c === ',' && !q) {
-          row.push('');
-        } else if ((c === '\r' || c === '\n') && !q) {
-          if (c === '\r' && text[i + 1] === '\n') {
-            i++;
-          }
-          r.push(row);
-          row = [''];
-        } else {
-          row[row.length - 1] += c;
-        }
-      }
-      if (row.length > 1 || row[0] !== '') {
-        r.push(row);
-      }
-      return r;
-    }
 
     document.getElementById('reset-btn').onclick = () => {
       if (!auth.currentUser) {

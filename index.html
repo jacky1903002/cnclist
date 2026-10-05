@@ -181,15 +181,17 @@
       border: 1px solid var(--border-color);
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
       margin-bottom: 32px;
-      overflow: hidden;
+      overflow-x: auto; /* 允許橫向滾動 */
     }
 
     .tab-content.active { display: block; }
 
     table {
       width: 100%;
-      border-collapse: collapse;
+      border-collapse: separate; /* 凍結窗格必備 */
+      border-spacing: 0;
       text-align: left;
+      min-width: 1000px;
     }
 
     th {
@@ -205,6 +207,48 @@
       top: 0;
       z-index: 50;
       user-select: none;
+      white-space: nowrap;
+    }
+
+    /* 凍結窗格 (Freeze Panes) 設定 */
+    /* 固定第 1 欄 (拖曳圖示) */
+    th:nth-child(1),
+    td:nth-child(1) {
+      position: sticky;
+      left: 0;
+      z-index: 55;
+      background-color: var(--card-bg);
+    }
+    th:nth-child(1) {
+      z-index: 60;
+      background-color: #cbd5e1;
+    }
+
+    /* 固定第 2 欄 (MATERIAL) */
+    th:nth-child(2),
+    td:nth-child(2) {
+      position: sticky;
+      left: 40px; /* 搭配第一欄寬度 */
+      z-index: 55;
+      background-color: #f1f5f9;
+    }
+    th:nth-child(2) {
+      z-index: 60;
+      background-color: #cbd5e1;
+    }
+
+    /* 固定第 3 欄 (PROCESS / MACHINE) */
+    th:nth-child(3),
+    td:nth-child(3) {
+      position: sticky;
+      left: 200px; /* 前兩欄累積寬度 */
+      z-index: 55;
+      background-color: var(--card-bg);
+      border-right: 2px solid var(--border-color);
+    }
+    th:nth-child(3) {
+      z-index: 60;
+      background-color: #cbd5e1;
     }
 
     .th-header-content {
@@ -245,6 +289,7 @@
       font-weight: 500;
       color: var(--text-main);
       vertical-align: middle;
+      white-space: nowrap;
     }
 
     tr:hover td { background-color: #f1f5f9; }
@@ -351,6 +396,7 @@
       background: #ffffff;
       padding: 24px;
       border-radius: 10px;
+      overflow-x: auto;
     }
     .export-header-title {
       display: none;
@@ -442,7 +488,7 @@
             <div id="stat-20262h-exp" class="stat-card-value" style="color: #0284c7;">0 項</div>
           </div>
         </div>
-        <div style="padding: 0 24px 24px 24px;">
+        <div style="padding: 0 24px 24px 24px; overflow-x: auto;">
           <h3 style="color: var(--accent); margin-top: 0; font-size: 1.3rem;">🔍 機台擴產與異動明細分析清單</h3>
           <table>
             <thead>
@@ -496,12 +542,12 @@
     const db = getFirestore(app);
 
     let columns = [
-      { key: 'material', label: 'Material', width: '15%' },
-      { key: 'process', label: 'Process / Machine', width: '25%' },
-      { key: 'y2025', label: '2025', width: '15%' },
-      { key: 'y2026', label: '2026', width: '20%' },
-      { key: 'y2026_2h', label: '2026 2H', width: '20%' },
-      { key: 'action', label: '操作', width: '5%', noDrag: true }
+      { key: 'material', label: 'Material', width: '160px' },
+      { key: 'process', label: 'Process / Machine', width: '220px' },
+      { key: 'y2025', label: '2025', width: '150px' },
+      { key: 'y2026', label: '2026', width: '180px' },
+      { key: 'y2026_2h', label: '2026 2H', width: '180px' },
+      { key: 'action', label: '操作', width: '80px', noDrag: true }
     ];
 
     const initialData = [
@@ -566,7 +612,7 @@
       const headerHeight = document.getElementById('sticky-header').offsetHeight;
       const ths = document.querySelectorAll('th');
       ths.forEach(th => {
-        th.style.top = `${headerHeight}px`;
+        th.style.top = `0px`; // 相對於 table-container 凍結
       });
     }
 
@@ -700,7 +746,7 @@
 
       const colKey = 'col_' + Date.now();
       const actionIndex = columns.findIndex(c => c.key === 'action');
-      const newColObj = { key: colKey, label: colLabel.trim(), width: '15%' };
+      const newColObj = { key: colKey, label: colLabel.trim(), width: '180px' };
 
       if (actionIndex !== -1) {
         columns.splice(actionIndex, 0, newColObj);
@@ -1192,20 +1238,20 @@
           }
 
           const newColumns = [
-            { key: 'material', label: jsonRows[0][matIdx] || 'Material', width: '15%' },
-            { key: 'process', label: jsonRows[0][procIdx] || 'Process / Machine', width: '25%' }
+            { key: 'material', label: jsonRows[0][matIdx] || 'Material', width: '160px' },
+            { key: 'process', label: jsonRows[0][procIdx] || 'Process / Machine', width: '220px' }
           ];
 
           const extraColMap = [];
           jsonRows[0].forEach((colName, idx) => {
             if (idx !== matIdx && idx !== procIdx && colName) {
               const key = 'col_' + idx + '_' + Date.now();
-              newColumns.push({ key: key, label: String(colName).trim(), width: '20%' });
+              newColumns.push({ key: key, label: String(colName).trim(), width: '180px' });
               extraColMap.push({ index: idx, key: key });
             }
           });
 
-          newColumns.push({ key: 'action', label: '操作', width: '5%', noDrag: true });
+          newColumns.push({ key: 'action', label: '操作', width: '80px', noDrag: true });
 
           const parsedList = [];
           for (let i = 1; i < jsonRows.length; i++) {
@@ -1254,12 +1300,12 @@
       if (confirm("警告：這將會清除雲端上的所有修改，恢復成預設數值與預設欄位！確定要重置嗎？")) {
         roadmapData = [...initialData];
         columns = [
-          { key: 'material', label: 'Material', width: '15%' },
-          { key: 'process', label: 'Process / Machine', width: '25%' },
-          { key: 'y2025', label: '2025', width: '15%' },
-          { key: 'y2026', label: '2026', width: '20%' },
-          { key: 'y2026_2h', label: '2026 2H', width: '20%' },
-          { key: 'action', label: '操作', width: '5%', noDrag: true }
+          { key: 'material', label: 'Material', width: '160px' },
+          { key: 'process', label: 'Process / Machine', width: '220px' },
+          { key: 'y2025', label: '2025', width: '150px' },
+          { key: 'y2026', label: '2026', width: '180px' },
+          { key: 'y2026_2h', label: '2026 2H', width: '180px' },
+          { key: 'action', label: '操作', width: '80px', noDrag: true }
         ];
         saveToFirestore(roadmapData, columns);
       }

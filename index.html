@@ -30,14 +30,14 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       background-color: var(--bg-color);
       color: var(--text-main);
-      font-size: 15px;
-      line-height: 1.4;
+      font-size: 14px;
+      line-height: 1.3;
     }
 
     .app-container {
       display: flex;
       flex-direction: column;
-      padding: 16px 24px;
+      padding: 8px 16px;
     }
 
     .sticky-header-wrapper {
@@ -45,110 +45,115 @@
       top: 0;
       z-index: 100;
       background-color: var(--bg-color);
-      padding-top: 8px;
+      padding-top: 4px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid var(--border-color);
+      margin-bottom: 8px;
     }
 
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
-      border-bottom: 2px solid var(--border-color);
-      padding-bottom: 12px;
+      margin-bottom: 6px;
+      padding-bottom: 4px;
+      border-bottom: 1px dashed var(--border-light);
     }
 
     .brand-title {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
     }
 
     .badge-pro {
       background: linear-gradient(135deg, #0284c7, #4f46e5);
       color: #fff;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 800;
-      padding: 4px 10px;
-      border-radius: 6px;
+      padding: 2px 8px;
+      border-radius: 4px;
       letter-spacing: 0.05em;
     }
 
     h1 {
       margin: 0;
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       font-weight: 800;
       color: var(--text-main);
       letter-spacing: -0.02em;
     }
 
-    .last-update-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      margin-bottom: 12px;
-      background: #e2e8f0;
-      padding: 4px 12px;
-      border-radius: 6px;
-      width: fit-content;
-      font-weight: 600;
-      border: 1px solid var(--border-light);
-    }
-
     .auth-box {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
       background: var(--card-bg);
-      padding: 6px 14px;
-      border-radius: 8px;
+      padding: 3px 10px;
+      border-radius: 6px;
       border: 1px solid var(--border-color);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     }
 
     .auth-status {
-      font-size: 0.9rem;
+      font-size: 0.82rem;
       font-weight: 600;
       color: var(--text-muted);
     }
 
-    /* 主要功能頁籤 */
+    /* 頂部整合控制欄 (更新時間 + 主要頁籤 + 材質分頁 集中一列) */
+    .compact-control-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+
+    .last-update-bar {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      background: #e2e8f0;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+      border: 1px solid var(--border-light);
+      white-space: nowrap;
+    }
+
     .nav-tabs {
       display: flex;
-      gap: 10px;
-      margin-bottom: 8px;
+      gap: 6px;
     }
 
     .tab-btn {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
       color: var(--text-muted);
-      padding: 8px 18px;
-      border-radius: 6px;
+      padding: 4px 12px;
+      border-radius: 5px;
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       cursor: pointer;
       transition: all 0.2s;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     }
 
     .tab-btn.active {
       background: var(--accent);
       color: #fff;
       border-color: var(--accent);
-      box-shadow: 0 3px 6px rgba(2, 132, 199, 0.3);
     }
 
-    /* 材質分頁 sub-tabs */
     .material-tabs-container {
       display: flex;
-      gap: 6px;
-      margin-bottom: 12px;
+      gap: 4px;
       flex-wrap: wrap;
       background: #e2e8f0;
-      padding: 6px;
-      border-radius: 8px;
+      padding: 3px;
+      border-radius: 6px;
       border: 1px solid var(--border-light);
     }
 
@@ -156,10 +161,10 @@
       background: transparent;
       border: none;
       color: var(--text-muted);
-      padding: 6px 14px;
-      border-radius: 6px;
+      padding: 3px 10px;
+      border-radius: 4px;
       font-weight: 700;
-      font-size: 0.88rem;
+      font-size: 0.82rem;
       cursor: pointer;
       transition: all 0.2s;
     }
@@ -172,13 +177,12 @@
     .mat-tab-btn.active {
       background: var(--card-bg);
       color: var(--accent);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
 
     .toolbar {
       display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
+      gap: 6px;
       flex-wrap: wrap;
       align-items: center;
     }
@@ -187,13 +191,12 @@
       background-color: var(--card-bg);
       color: var(--text-main);
       border: 1px solid var(--border-color);
-      padding: 6px 12px;
-      border-radius: 6px;
+      padding: 4px 10px;
+      border-radius: 5px;
       cursor: pointer;
       font-weight: 700;
-      font-size: 0.88rem;
+      font-size: 0.82rem;
       transition: all 0.2s;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     }
 
     .btn:hover {
@@ -209,20 +212,20 @@
     .btn-danger { background-color: #ffeeef; color: var(--danger); border: 1px solid #fecaca; }
     .btn-danger:hover { background-color: var(--danger); color: #fff; }
 
+    /* 下方表格容器：充分利用垂直空間 */
     .tab-content {
       display: none;
       background-color: var(--card-bg);
-      border-radius: 8px;
+      border-radius: 6px;
       border: 1px solid var(--border-color);
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-      margin-bottom: 24px;
+      margin-bottom: 12px;
       overflow-x: auto;
-      max-height: 75vh;
+      max-height: calc(100vh - 160px);
     }
 
     .tab-content.active { display: block; }
 
-    /* 表格 100% 滿版與欄位自適應 */
     table {
       width: 100%;
       table-layout: auto;
@@ -231,15 +234,14 @@
       text-align: left;
     }
 
-    /* 凍結窗格 1：固定頂端標頭 */
     th {
       background-color: #cbd5e1;
       color: #0f172a;
       font-weight: 800;
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       text-transform: uppercase;
       letter-spacing: 0.01em;
-      padding: 10px 12px;
+      padding: 8px 10px;
       border-bottom: 2px solid var(--border-color);
       position: sticky;
       top: 0;
@@ -248,14 +250,13 @@
       white-space: nowrap;
     }
 
-    /* 凍結窗格 2：固定左側控制欄 (32px) */
     th.sticky-col-handle,
     td.sticky-col-handle {
       position: sticky;
       left: 0px;
-      width: 32px;
-      min-width: 32px;
-      max-width: 32px;
+      width: 28px;
+      min-width: 28px;
+      max-width: 28px;
       z-index: 55;
       background-color: var(--card-bg);
     }
@@ -264,11 +265,10 @@
       background-color: #cbd5e1;
     }
 
-    /* 凍結窗格 3：固定左側 Material 欄位 (90px) */
     th.sticky-col-mat,
     td.sticky-col-mat {
       position: sticky;
-      left: 32px;
+      left: 28px;
       width: 90px;
       min-width: 90px;
       max-width: 90px;
@@ -281,7 +281,6 @@
       background-color: #cbd5e1;
     }
 
-    /* 縮小版的 Material 樣式（應用於材質分頁） */
     .material-cell-small {
       font-size: 0.78rem !important;
       color: #64748b !important;
@@ -293,11 +292,10 @@
       vertical-align: middle !important;
     }
 
-    /* 凍結窗格 4：固定左側 Process / Machine 欄位 (left: 32px + 90px = 122px) */
     th.sticky-col-proc,
     td.sticky-col-proc {
       position: sticky;
-      left: 122px;
+      left: 118px;
       z-index: 55;
       background-color: #f1f5f9;
       border-right: 2px solid var(--border-light);
@@ -329,9 +327,9 @@
       border: none;
       color: var(--text-muted);
       cursor: pointer;
-      font-size: 0.85rem;
-      padding: 2px 4px;
-      border-radius: 4px;
+      font-size: 0.8rem;
+      padding: 1px 3px;
+      border-radius: 3px;
     }
     .btn-del-col:hover { color: var(--danger); background: rgba(220, 38, 38, 0.15); }
     body.read-only .btn-del-col { display: none; }
@@ -340,9 +338,9 @@
     body:not(.read-only) th.draggable-col:active { cursor: grabbing; }
 
     td {
-      padding: 8px 12px;
+      padding: 6px 10px;
       border-bottom: 1px solid var(--border-light);
-      font-size: 0.92rem;
+      font-size: 0.88rem;
       font-weight: 500;
       color: var(--text-main);
       vertical-align: middle;
@@ -354,9 +352,9 @@
     .drag-handle {
       cursor: grab;
       color: #94a3b8;
-      font-size: 1.1rem;
+      font-size: 1rem;
       text-align: center;
-      width: 32px;
+      width: 28px;
       user-select: none;
     }
     .drag-handle:active { cursor: grabbing; }
@@ -367,27 +365,27 @@
 
     .analytics-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
-      padding: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+      padding: 12px;
     }
 
     .stat-card {
       background: #f8fafc;
       border: 1px solid var(--border-light);
-      border-radius: 8px;
-      padding: 16px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+      border-radius: 6px;
+      padding: 12px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
     }
 
-    .stat-card-title { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 700; }
-    .stat-card-value { font-size: 1.8rem; font-weight: 800; color: var(--success); }
+    .stat-card-title { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 700; }
+    .stat-card-value { font-size: 1.5rem; font-weight: 800; color: var(--success); }
 
     .delta-badge {
       display: inline-block;
-      padding: 2px 8px;
+      padding: 2px 6px;
       border-radius: 4px;
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       font-weight: 800;
     }
     .delta-plus { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
@@ -400,7 +398,7 @@
       outline: 2px dashed var(--accent);
     }
 
-    .action-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1rem; }
+    .action-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.9rem; }
     body:not(.read-only) .action-btn:hover { color: var(--danger); }
     body.read-only .action-btn { opacity: 0.3; cursor: not-allowed; }
 
@@ -420,39 +418,39 @@
     .modal-card {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 24px;
+      border-radius: 8px;
+      padding: 20px;
       width: 100%;
-      max-width: 380px;
-      box-shadow: 0 15px 20px -5px rgba(0, 0, 0, 0.1);
+      max-width: 360px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     }
-    .modal-card h3 { margin-top: 0; margin-bottom: 16px; color: var(--accent); font-size: 1.2rem; }
+    .modal-card h3 { margin-top: 0; margin-bottom: 12px; color: var(--accent); font-size: 1.1rem; }
     .modal-input {
       width: 100%;
-      padding: 10px 12px;
-      margin-bottom: 14px;
+      padding: 8px 10px;
+      margin-bottom: 12px;
       background: #f8fafc;
       border: 1px solid var(--border-color);
-      border-radius: 6px;
+      border-radius: 5px;
       color: var(--text-main);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
     .modal-input:focus { outline: none; border-color: var(--accent); }
-    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 6px; margin-top: 6px; }
 
     #roadmap-export-area {
       background: #ffffff;
-      padding: 16px;
-      border-radius: 8px;
+      padding: 12px;
+      border-radius: 6px;
     }
     .export-header-title {
       display: none;
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       font-weight: 800;
       color: #1e293b;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       border-bottom: 3px solid var(--accent);
-      padding-bottom: 6px;
+      padding-bottom: 4px;
     }
 
     #roadmap-export-area.exporting .drag-handle,
@@ -470,38 +468,42 @@
     <div class="sticky-header-wrapper" id="sticky-header">
       <header>
         <div class="brand-title">
-          <span class="badge-pro">PRO ENTERPRISE</span>
+          <span class="badge-pro">PRO</span>
           <h1>2026 Capacity Roadmap & Machine Analytics</h1>
         </div>
         <div class="auth-box">
-          <span id="auth-status" class="auth-status">狀態：唯讀模式</span>
+          <span id="auth-status" class="auth-status">唯讀模式</span>
           <button id="auth-btn" class="btn btn-primary">管理員登入</button>
         </div>
       </header>
 
-      <div class="last-update-bar" id="last-update-bar">
-        <span>⏱️ 上次更新時間：</span><span id="last-update-time" style="color: var(--text-main);">-</span>
+      <!-- 整合式緊湊控制區 -->
+      <div class="compact-control-bar">
+        <div class="last-update-bar" id="last-update-bar">
+          <span>⏱️ 更新：</span><span id="last-update-time" style="color: var(--text-main);">-</span>
+        </div>
+
+        <div class="nav-tabs">
+          <button class="tab-btn active" onclick="switchTab('roadmap-tab', event)">📊 Roadmap 圖鑑表</button>
+          <button class="tab-btn" onclick="switchTab('analytics-tab', event)">📈 機台增減分析</button>
+        </div>
+
+        <!-- 材質分類分頁頁籤 -->
+        <div id="material-tabs" class="material-tabs-container">
+          <!-- JS 動態生成材質 Tab -->
+        </div>
       </div>
 
-      <div class="nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('roadmap-tab', event)">📊 Capacity Roadmap 圖鑑表</button>
-        <button class="tab-btn" onclick="switchTab('analytics-tab', event)">📈 機台增減動態分析</button>
-      </div>
-
-      <!-- 材質分類分頁頁籤 -->
-      <div id="material-tabs" class="material-tabs-container">
-        <!-- JS 動態生成材質 Tab -->
-      </div>
-
+      <!-- 工具按鈕列 -->
       <div class="toolbar">
         <button id="add-row-btn" class="btn btn-primary">➕ 新增資料列</button>
         <button id="add-col-btn" class="btn btn-primary">➕ 新增欄位</button>
-        <button id="export-excel-btn" class="btn btn-success">📊 匯出 Excel (.xlsx)</button>
-        <button id="import-excel-btn" class="btn btn-success">📥 匯入 Excel (.xlsx)</button>
-        <button id="export-roadmap-image-btn" class="btn">📸 匯出 Roadmap 圖片 (PNG)</button>
+        <button id="export-excel-btn" class="btn btn-success">📊 匯出 Excel</button>
+        <button id="import-excel-btn" class="btn btn-success">📥 匯入 Excel</button>
+        <button id="export-roadmap-image-btn" class="btn">📸 匯出圖片 (PNG)</button>
         <button id="export-json-btn" class="btn">💾 備份 JSON</button>
-        <button id="import-btn" class="btn">📤 匯入 JSON 備份</button>
-        <button id="reset-btn" class="btn btn-danger">🔄 重置預設資料</button>
+        <button id="import-btn" class="btn">📤 匯入 JSON</button>
+        <button id="reset-btn" class="btn btn-danger">🔄 重置預設</button>
         <input type="file" id="import-file-input" accept=".json" style="display: none;">
         <input type="file" id="import-excel-input" accept=".xlsx, .xls" style="display: none;">
       </div>
@@ -525,7 +527,7 @@
 
     <!-- 頁面二：機台增減分析 -->
     <div id="analytics-tab" class="tab-content">
-      <div class="toolbar" style="padding: 12px 16px 0 16px; justify-content: flex-end;">
+      <div class="toolbar" style="padding: 8px 12px 0 12px; justify-content: flex-end;">
         <button id="export-image-btn" class="btn btn-success">📸 匯出分析圖表圖片 (PNG)</button>
       </div>
       <div id="analytics-export-area">
@@ -539,8 +541,8 @@
             <div id="stat-20262h-exp" class="stat-card-value" style="color: #0284c7;">0 項</div>
           </div>
         </div>
-        <div style="padding: 0 16px 16px 16px;">
-          <h3 style="color: var(--accent); margin-top: 0; font-size: 1.1rem;">🔍 機台擴產與異動明細分析清單</h3>
+        <div style="padding: 0 12px 12px 12px;">
+          <h3 style="color: var(--accent); margin-top: 0; font-size: 1rem;">🔍 機台擴產與異動明細分析清單</h3>
           <table>
             <thead>
               <tr>
@@ -717,7 +719,6 @@
       }
     };
 
-    /* --- 生成材質分頁 Tab --- */
     function renderMaterialTabs() {
       const materials = ['ALL'];
       roadmapData.forEach(item => {
@@ -741,7 +742,6 @@
       });
     }
 
-    /* --- 動態渲染表頭與精確凍結設定 --- */
     function renderTableHeader() {
       headerRow.innerHTML = '<th class="no-drag sticky-col-handle"></th>';
 
@@ -870,7 +870,6 @@
       return false;
     }
 
-    /* --- 渲染表格內容（全部及分頁切換時，同材質名稱皆自動合併儲存格） --- */
     function renderTable() {
       tbody.innerHTML = '';
 
@@ -887,7 +886,6 @@
         const currentMat = roadmapData[realIdx].material || '';
         let spanCount = 1;
 
-        // 計算相同名稱的連續列數（無論是否在分頁，只要名稱相同就合併）
         while (
           i + spanCount < filteredIndices.length &&
           (roadmapData[filteredIndices[i + spanCount]].material || '') === currentMat
@@ -925,7 +923,6 @@
                   td.style.fontWeight = '700';
                   td.style.color = '#0369a1';
                 } else {
-                  // 材質分頁專用：精簡版合併儲存格（小字體、微寬度限制）
                   td.className = 'editable material-cell-small sticky-col-mat';
                 }
 
@@ -1027,7 +1024,7 @@
       const exportBtn = document.getElementById('export-roadmap-image-btn');
       const printTitle = document.getElementById('print-title');
 
-      exportBtn.innerText = "⏳ 圖片生成中...";
+      exportBtn.innerText = "⏳ 生成中...";
       exportBtn.disabled = true;
       printTitle.style.display = 'block';
 
@@ -1069,7 +1066,7 @@
 
         exportArea.classList.remove('exporting');
         printTitle.style.display = 'none';
-        exportBtn.innerText = "📸 匯出 Roadmap 圖片 (PNG)";
+        exportBtn.innerText = "📸 匯出圖片 (PNG)";
         exportBtn.disabled = false;
       }).catch(err => {
         alert("匯出圖片失敗：" + err);
@@ -1084,7 +1081,7 @@
 
         exportArea.classList.remove('exporting');
         printTitle.style.display = 'none';
-        exportBtn.innerText = "📸 匯出 Roadmap 圖片 (PNG)";
+        exportBtn.innerText = "📸 匯出圖片 (PNG)";
         exportBtn.disabled = false;
       });
     };
@@ -1098,7 +1095,7 @@
         authBtn.classList.add("btn-danger");
       } else {
         document.body.classList.add("read-only");
-        authStatus.innerText = "狀態：唯讀模式";
+        authStatus.innerText = "唯讀模式";
         authBtn.innerText = "管理員登入";
         authBtn.classList.remove("btn-danger");
         authBtn.classList.add("btn-primary");
@@ -1260,7 +1257,6 @@
       reader.readAsText(file);
     };
 
-    // Excel (.xlsx) 匯出功能
     document.getElementById('export-excel-btn').onclick = () => {
       try {
         const activeCols = columns.filter(c => c.key !== 'action');
@@ -1284,7 +1280,6 @@
       }
     };
 
-    // Excel (.xlsx) 匯入功能
     const importExcelBtn = document.getElementById('import-excel-btn');
     const importExcelInput = document.getElementById('import-excel-input');
 

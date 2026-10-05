@@ -217,6 +217,7 @@
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
       margin-bottom: 24px;
       overflow-x: auto;
+      max-height: 75vh;
     }
 
     .tab-content.active { display: block; }
@@ -230,7 +231,7 @@
       text-align: left;
     }
 
-    /* 凍結窗格 1：固定標頭 */
+    /* 凍結窗格 1：固定頂端標頭 */
     th {
       background-color: #cbd5e1;
       color: #0f172a;
@@ -247,28 +248,59 @@
       white-space: nowrap;
     }
 
-    /* 凍結窗格 2：固定拖曳控制欄與核心機台欄位 */
-    th:nth-child(1),
-    td:nth-child(1) {
+    /* 凍結窗格 2：固定左側控制欄 (32px) */
+    th.sticky-col-handle,
+    td.sticky-col-handle {
       position: sticky;
       left: 0px;
       width: 32px;
+      min-width: 32px;
+      max-width: 32px;
       z-index: 55;
       background-color: var(--card-bg);
     }
-    th:nth-child(1) {
+    th.sticky-col-handle {
       z-index: 60;
       background-color: #cbd5e1;
     }
 
-    /* 凍結 Process / Machine 欄位 */
+    /* 凍結窗格 3：固定左側 Material 欄位 (90px) */
+    th.sticky-col-mat,
+    td.sticky-col-mat {
+      position: sticky;
+      left: 32px;
+      width: 90px;
+      min-width: 90px;
+      max-width: 90px;
+      z-index: 55;
+      background-color: #f8fafc;
+      border-right: 1px solid var(--border-light);
+    }
+    th.sticky-col-mat {
+      z-index: 60;
+      background-color: #cbd5e1;
+    }
+
+    /* 縮小版的 Material 樣式 */
+    .material-cell-small {
+      font-size: 0.78rem !important;
+      color: #64748b !important;
+      font-weight: 600 !important;
+      white-space: normal !important;
+      word-break: break-word !important;
+      line-height: 1.2 !important;
+      padding: 6px 8px !important;
+    }
+
+    /* 凍結窗格 4：固定左側 Process / Machine 欄位 (left: 32px + 90px = 122px) */
     th.sticky-col-proc,
     td.sticky-col-proc {
       position: sticky;
-      left: 32px;
+      left: 122px;
       z-index: 55;
       background-color: #f1f5f9;
       border-right: 2px solid var(--border-light);
+      box-shadow: 2px 0 5px rgba(0,0,0,0.05);
     }
     th.sticky-col-proc {
       z-index: 60;
@@ -423,8 +455,8 @@
     }
 
     #roadmap-export-area.exporting .drag-handle,
-    #roadmap-export-area.exporting th:first-child,
-    #roadmap-export-area.exporting td:first-child,
+    #roadmap-export-area.exporting th.sticky-col-handle,
+    #roadmap-export-area.exporting td.sticky-col-handle,
     #roadmap-export-area.exporting .action-btn,
     #roadmap-export-area.exporting .btn-del-col {
       display: none !important;
@@ -481,7 +513,7 @@
         <table id="main-roadmap-table">
           <thead>
             <tr id="table-header-row">
-              <th style="width: 32px;" class="no-drag"></th>
+              <th class="no-drag sticky-col-handle"></th>
             </tr>
           </thead>
           <tbody id="table-body">
@@ -617,7 +649,7 @@
     ];
 
     let roadmapData = initialData;
-    let currentMaterialTab = 'ALL'; // 當前選擇的材質分頁
+    let currentMaterialTab = 'ALL';
 
     const tbody = document.getElementById('table-body');
     const headerRow = document.getElementById('table-header-row');
@@ -708,19 +740,16 @@
       });
     }
 
-    /* --- 動態渲染表頭與凍結設定 --- */
+    /* --- 動態渲染表頭與精確凍結設定 --- */
     function renderTableHeader() {
-      headerRow.innerHTML = '<th style="width: 32px;" class="no-drag"></th>';
-      
-      const activeCols = columns.filter(col => {
-        if (currentMaterialTab !== 'ALL' && col.key === 'material') return false;
-        return true;
-      });
+      headerRow.innerHTML = '<th class="no-drag sticky-col-handle"></th>';
 
-      activeCols.forEach((col, index) => {
+      columns.forEach((col) => {
         const th = document.createElement('th');
 
-        if (col.key === 'process') {
+        if (col.key === 'material') {
+          th.classList.add('sticky-col-mat');
+        } else if (col.key === 'process') {
           th.classList.add('sticky-col-proc');
         }
 
@@ -840,7 +869,7 @@
       return false;
     }
 
-    /* --- 渲染表格內容（包含分材質頁籤過濾與同材質跨行合併） --- */
+    /* --- 渲染表格內容（支援單一材質下 Material 欄位縮小呈現） --- */
     function renderTable() {
       tbody.innerHTML = '';
 
@@ -880,7 +909,7 @@
           }
 
           const handleTd = document.createElement('td');
-          handleTd.className = 'drag-handle';
+          handleTd.className = 'drag-handle sticky-col-handle';
           handleTd.innerHTML = '⋮⋮';
           tr.appendChild(handleTd);
 
@@ -889,7 +918,7 @@
               if (currentMaterialTab === 'ALL') {
                 if (j === 0) {
                   const td = document.createElement('td');
-                  td.className = 'editable material-cell';
+                  td.className = 'editable material-cell sticky-col-mat';
                   td.style.fontWeight = '700';
                   td.style.color = '#0369a1';
                   td.rowSpan = spanCount;
@@ -897,6 +926,13 @@
                   td.ondblclick = () => editMaterialCategory(currentRealIdx);
                   tr.appendChild(td);
                 }
+              } else {
+                // 單一材質頁籤：精簡版 Material 欄位，縮小字型與欄寬
+                const td = document.createElement('td');
+                td.className = 'editable material-cell-small sticky-col-mat';
+                td.innerText = currentMat || '-';
+                td.ondblclick = () => editMaterialCategory(currentRealIdx);
+                tr.appendChild(td);
               }
             } else if (col.key === 'action') {
               const td = document.createElement('td');

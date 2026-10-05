@@ -11,10 +11,10 @@
     :root {
       --bg-color: #f8fafc;
       --card-bg: #ffffff;
-      --border-color: #94a3b8; /* 強化邊框對比 */
+      --border-color: #94a3b8;
       --border-light: #cbd5e1;
-      --text-main: #0f172a;   /* 加深主要文字顏色，提升清晰度 */
-      --text-muted: #475569;  /* 加深次要文字 */
+      --text-main: #0f172a;
+      --text-muted: #475569;
       --accent: #0284c7;
       --accent-hover: #0369a1;
       --success: #059669;
@@ -30,14 +30,14 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       background-color: var(--bg-color);
       color: var(--text-main);
-      font-size: 16px;
-      line-height: 1.5;
+      font-size: 15px;
+      line-height: 1.4;
     }
 
     .app-container {
       display: flex;
       flex-direction: column;
-      padding: 20px 32px;
+      padding: 16px 24px;
     }
 
     .sticky-header-wrapper {
@@ -45,7 +45,7 @@
       top: 0;
       z-index: 100;
       background-color: var(--bg-color);
-      padding-top: 12px;
+      padding-top: 8px;
     }
 
     header {
@@ -54,28 +54,28 @@
       align-items: center;
       margin-bottom: 12px;
       border-bottom: 2px solid var(--border-color);
-      padding-bottom: 16px;
+      padding-bottom: 12px;
     }
 
     .brand-title {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
     }
 
     .badge-pro {
       background: linear-gradient(135deg, #0284c7, #4f46e5);
       color: #fff;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 800;
-      padding: 4px 12px;
+      padding: 4px 10px;
       border-radius: 6px;
       letter-spacing: 0.05em;
     }
 
     h1 {
       margin: 0;
-      font-size: 1.75rem;
+      font-size: 1.5rem;
       font-weight: 800;
       color: var(--text-main);
       letter-spacing: -0.02em;
@@ -85,12 +85,12 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       color: var(--text-muted);
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       background: #e2e8f0;
-      padding: 6px 16px;
-      border-radius: 8px;
+      padding: 4px 12px;
+      border-radius: 6px;
       width: fit-content;
       font-weight: 600;
       border: 1px solid var(--border-light);
@@ -99,34 +99,34 @@
     .auth-box {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
       background: var(--card-bg);
-      padding: 8px 18px;
+      padding: 6px 14px;
       border-radius: 8px;
       border: 1px solid var(--border-color);
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
 
     .auth-status {
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 600;
       color: var(--text-muted);
     }
 
     .nav-tabs {
       display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
+      gap: 10px;
+      margin-bottom: 12px;
     }
 
     .tab-btn {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
       color: var(--text-muted);
-      padding: 10px 24px;
-      border-radius: 8px;
+      padding: 8px 18px;
+      border-radius: 6px;
       font-weight: 700;
-      font-size: 1.05rem;
+      font-size: 0.95rem;
       cursor: pointer;
       transition: all 0.2s;
       box-shadow: 0 1px 2px rgba(0,0,0,0.05);
@@ -136,43 +136,13 @@
       background: var(--accent);
       color: #fff;
       border-color: var(--accent);
-      box-shadow: 0 4px 8px rgba(2, 132, 199, 0.3);
-    }
-
-    /* 材質子分頁樣式 */
-    .material-tabs-container {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
-      padding: 8px 12px;
-      background-color: #e2e8f0;
-      border-radius: 8px;
-      overflow-x: auto;
-    }
-
-    .mat-tab-btn {
-      background: #ffffff;
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      padding: 6px 16px;
-      border-radius: 6px;
-      font-weight: 700;
-      font-size: 0.95rem;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s;
-    }
-
-    .mat-tab-btn.active {
-      background: #0369a1;
-      color: #ffffff;
-      border-color: #0369a1;
+      box-shadow: 0 3px 6px rgba(2, 132, 199, 0.3);
     }
 
     .toolbar {
       display: flex;
-      gap: 10px;
-      margin-bottom: 16px;
+      gap: 8px;
+      margin-bottom: 12px;
       flex-wrap: wrap;
       align-items: center;
     }
@@ -181,11 +151,11 @@
       background-color: var(--card-bg);
       color: var(--text-main);
       border: 1px solid var(--border-color);
-      padding: 8px 16px;
-      border-radius: 8px;
+      padding: 6px 12px;
+      border-radius: 6px;
       cursor: pointer;
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       transition: all 0.2s;
       box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     }
@@ -206,31 +176,31 @@
     .tab-content {
       display: none;
       background-color: var(--card-bg);
-      border-radius: 12px;
+      border-radius: 8px;
       border: 1px solid var(--border-color);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
-      margin-bottom: 32px;
-      overflow-x: auto;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      margin-bottom: 24px;
     }
 
     .tab-content.active { display: block; }
 
+    /* 表格 100% 滿版與欄位寬度自動調配 */
     table {
       width: 100%;
-      border-collapse: separate; /* 凍結窗格必備 */
+      table-layout: auto;
+      border-collapse: separate;
       border-spacing: 0;
       text-align: left;
-      min-width: 1000px;
     }
 
     th {
       background-color: #cbd5e1;
       color: #0f172a;
       font-weight: 800;
-      font-size: 1.05rem;
+      font-size: 0.95rem;
       text-transform: uppercase;
-      letter-spacing: 0.02em;
-      padding: 14px 18px;
+      letter-spacing: 0.01em;
+      padding: 10px 12px;
       border-bottom: 2px solid var(--border-color);
       position: sticky;
       top: 0;
@@ -239,13 +209,12 @@
       white-space: nowrap;
     }
 
-    /* --- 1. 圖示與前幾欄位凍結窗格修正 --- */
-    /* 第 1 欄：拖曳圖示欄位 */
+    /* 凍結窗格設定 */
     th:nth-child(1),
     td:nth-child(1) {
       position: sticky;
       left: 0px;
-      width: 40px;
+      width: 32px;
       z-index: 55;
       background-color: var(--card-bg);
     }
@@ -254,11 +223,10 @@
       background-color: #cbd5e1;
     }
 
-    /* 第 2 欄：MATERIAL */
     th:nth-child(2),
-    td:nth-child(2) {
+    td.material-cell {
       position: sticky;
-      left: 40px;
+      left: 32px;
       z-index: 55;
       background-color: #f1f5f9;
     }
@@ -267,25 +235,11 @@
       background-color: #cbd5e1;
     }
 
-    /* 第 3 欄：PROCESS / MACHINE */
-    th:nth-child(3),
-    td:nth-child(3) {
-      position: sticky;
-      left: 200px; /* 40px + 160px */
-      z-index: 55;
-      background-color: var(--card-bg);
-      border-right: 2px solid var(--border-color);
-    }
-    th:nth-child(3) {
-      z-index: 60;
-      background-color: #cbd5e1;
-    }
-
     .th-header-content {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
+      gap: 6px;
     }
 
     .th-title {
@@ -302,8 +256,8 @@
       border: none;
       color: var(--text-muted);
       cursor: pointer;
-      font-size: 0.9rem;
-      padding: 4px 6px;
+      font-size: 0.85rem;
+      padding: 2px 4px;
       border-radius: 4px;
     }
     .btn-del-col:hover { color: var(--danger); background: rgba(220, 38, 38, 0.15); }
@@ -313,23 +267,23 @@
     body:not(.read-only) th.draggable-col:active { cursor: grabbing; }
 
     td {
-      padding: 12px 18px;
+      padding: 8px 12px;
       border-bottom: 1px solid var(--border-light);
-      font-size: 1.02rem;
+      font-size: 0.92rem;
       font-weight: 500;
       color: var(--text-main);
       vertical-align: middle;
       white-space: nowrap;
     }
 
-    tr:hover td { background-color: #f1f5f9; }
+    tr:hover td { background-color: #f8fafc; }
 
     .drag-handle {
       cursor: grab;
       color: #94a3b8;
-      font-size: 1.25rem;
+      font-size: 1.1rem;
       text-align: center;
-      width: 40px;
+      width: 32px;
       user-select: none;
     }
     .drag-handle:active { cursor: grabbing; }
@@ -340,27 +294,27 @@
 
     .analytics-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 20px;
-      padding: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      padding: 16px;
     }
 
     .stat-card {
       background: #f8fafc;
-      border: 2px solid var(--border-light);
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
     }
 
-    .stat-card-title { font-size: 1.05rem; color: var(--text-muted); margin-bottom: 8px; font-weight: 700; }
-    .stat-card-value { font-size: 2.2rem; font-weight: 800; color: var(--success); }
+    .stat-card-title { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 700; }
+    .stat-card-value { font-size: 1.8rem; font-weight: 800; color: var(--success); }
 
     .delta-badge {
       display: inline-block;
-      padding: 4px 12px;
-      border-radius: 6px;
-      font-size: 0.9rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.82rem;
       font-weight: 800;
     }
     .delta-plus { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
@@ -373,7 +327,7 @@
       outline: 2px dashed var(--accent);
     }
 
-    .action-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; }
+    .action-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1rem; }
     body:not(.read-only) .action-btn:hover { color: var(--danger); }
     body.read-only .action-btn { opacity: 0.3; cursor: not-allowed; }
 
@@ -393,40 +347,39 @@
     .modal-card {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 28px;
+      border-radius: 10px;
+      padding: 24px;
       width: 100%;
-      max-width: 400px;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      max-width: 380px;
+      box-shadow: 0 15px 20px -5px rgba(0, 0, 0, 0.1);
     }
-    .modal-card h3 { margin-top: 0; margin-bottom: 20px; color: var(--accent); font-size: 1.3rem; }
+    .modal-card h3 { margin-top: 0; margin-bottom: 16px; color: var(--accent); font-size: 1.2rem; }
     .modal-input {
       width: 100%;
-      padding: 12px 14px;
-      margin-bottom: 16px;
+      padding: 10px 12px;
+      margin-bottom: 14px;
       background: #f8fafc;
       border: 1px solid var(--border-color);
-      border-radius: 8px;
+      border-radius: 6px;
       color: var(--text-main);
-      font-size: 1rem;
+      font-size: 0.95rem;
     }
     .modal-input:focus { outline: none; border-color: var(--accent); }
-    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 12px; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
 
     #roadmap-export-area {
       background: #ffffff;
-      padding: 24px;
-      border-radius: 10px;
-      overflow-x: auto;
+      padding: 16px;
+      border-radius: 8px;
     }
     .export-header-title {
       display: none;
-      font-size: 1.8rem;
+      font-size: 1.5rem;
       font-weight: 800;
       color: #1e293b;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       border-bottom: 3px solid var(--accent);
-      padding-bottom: 8px;
+      padding-bottom: 6px;
     }
 
     #roadmap-export-area.exporting .drag-handle,
@@ -462,11 +415,6 @@
         <button class="tab-btn" onclick="switchTab('analytics-tab', event)">📈 機台增減動態分析</button>
       </div>
 
-      <!-- 材質分類子分頁 -->
-      <div id="material-tabs-container" class="material-tabs-container">
-        <!-- 動態生成材質頁籤 -->
-      </div>
-
       <div class="toolbar">
         <button id="add-row-btn" class="btn btn-primary">➕ 新增資料列</button>
         <button id="add-col-btn" class="btn btn-primary">➕ 新增欄位</button>
@@ -488,7 +436,7 @@
         <table id="main-roadmap-table">
           <thead>
             <tr id="table-header-row">
-              <th style="width: 40px;" class="no-drag"></th>
+              <th style="width: 32px;" class="no-drag"></th>
             </tr>
           </thead>
           <tbody id="table-body">
@@ -499,7 +447,7 @@
 
     <!-- 頁面二：機台增減分析 -->
     <div id="analytics-tab" class="tab-content">
-      <div class="toolbar" style="padding: 16px 24px 0 24px; justify-content: flex-end;">
+      <div class="toolbar" style="padding: 12px 16px 0 16px; justify-content: flex-end;">
         <button id="export-image-btn" class="btn btn-success">📸 匯出分析圖表圖片 (PNG)</button>
       </div>
       <div id="analytics-export-area">
@@ -513,8 +461,8 @@
             <div id="stat-20262h-exp" class="stat-card-value" style="color: #0284c7;">0 項</div>
           </div>
         </div>
-        <div style="padding: 0 24px 24px 24px; overflow-x: auto;">
-          <h3 style="color: var(--accent); margin-top: 0; font-size: 1.3rem;">🔍 機台擴產與異動明細分析清單</h3>
+        <div style="padding: 0 16px 16px 16px;">
+          <h3 style="color: var(--accent); margin-top: 0; font-size: 1.1rem;">🔍 機台擴產與異動明細分析清單</h3>
           <table>
             <thead>
               <tr>
@@ -567,12 +515,12 @@
     const db = getFirestore(app);
 
     let columns = [
-      { key: 'material', label: 'Material', width: '160px' },
-      { key: 'process', label: 'Process / Machine', width: '220px' },
-      { key: 'y2025', label: '2025', width: '150px' },
-      { key: 'y2026', label: '2026', width: '180px' },
-      { key: 'y2026_2h', label: '2026 2H', width: '180px' },
-      { key: 'action', label: '操作', width: '80px', noDrag: true }
+      { key: 'material', label: 'Material' },
+      { key: 'process', label: 'Process / Machine' },
+      { key: 'y2025', label: '2025' },
+      { key: 'y2026', label: '2026' },
+      { key: 'y2026_2h', label: '2026 2H' },
+      { key: 'action', label: '操作', noDrag: true }
     ];
 
     const initialData = [
@@ -624,7 +572,6 @@
     ];
 
     let roadmapData = initialData;
-    let selectedMaterial = "ALL"; // 預設顯示全部或特定材質
 
     const tbody = document.getElementById('table-body');
     const headerRow = document.getElementById('table-header-row');
@@ -633,39 +580,20 @@
     const authStatus = document.getElementById('auth-status');
     const loginModal = document.getElementById('login-modal');
     const lastUpdateTimeEl = document.getElementById('last-update-time');
-    const matTabsContainer = document.getElementById('material-tabs-container');
-
-    function updateStickyPosition() {
-      const headerHeight = document.getElementById('sticky-header').offsetHeight;
-      const ths = document.querySelectorAll('th');
-      ths.forEach(th => {
-        th.style.top = `0px`;
-      });
-    }
-
-    window.addEventListener('resize', updateStickyPosition);
 
     const docRef = doc(db, "capacity_roadmap", "main_data");
     onSnapshot(docRef, (docSnap) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
         roadmapData = data.list || [];
-        if (data.columns) {
-          columns = data.columns;
-        }
-        if (data.updatedAt) {
-          lastUpdateTimeEl.innerText = data.updatedAt;
-        } else {
-          lastUpdateTimeEl.innerText = "尚未記錄";
-        }
-        renderMaterialTabs();
+        if (data.columns) columns = data.columns;
+        if (data.updatedAt) lastUpdateTimeEl.innerText = data.updatedAt;
         renderTableHeader();
         renderTable();
         renderAnalytics();
       } else {
         roadmapData = initialData;
         lastUpdateTimeEl.innerText = "預設資料";
-        renderMaterialTabs();
         renderTableHeader();
         renderTable();
         renderAnalytics();
@@ -673,35 +601,6 @@
     }, (error) => {
       console.warn("Firestore 監聽通知：", error.message);
     });
-
-    // 動態生成材質頁籤
-    function renderMaterialTabs() {
-      const materials = Array.from(new Set(roadmapData.map(item => item.material).filter(Boolean)));
-      matTabsContainer.innerHTML = '';
-
-      // 全部 頁籤
-      const allBtn = document.createElement('button');
-      allBtn.className = `mat-tab-btn ${selectedMaterial === 'ALL' ? 'active' : ''}`;
-      allBtn.innerText = '🌐 全部材質 (ALL)';
-      allBtn.onclick = () => {
-        selectedMaterial = 'ALL';
-        renderMaterialTabs();
-        renderTable();
-      };
-      matTabsContainer.appendChild(allBtn);
-
-      materials.forEach(mat => {
-        const btn = document.createElement('button');
-        btn.className = `mat-tab-btn ${selectedMaterial === mat ? 'active' : ''}`;
-        btn.innerText = mat;
-        btn.onclick = () => {
-          selectedMaterial = mat;
-          renderMaterialTabs();
-          renderTable();
-        };
-        matTabsContainer.appendChild(btn);
-      });
-    }
 
     async function saveToFirestore(data, cols = columns) {
       if (!auth.currentUser) {
@@ -727,19 +626,14 @@
 
       if (tabId === 'analytics-tab') {
         renderAnalytics();
-        matTabsContainer.style.display = 'none';
-      } else {
-        matTabsContainer.style.display = 'flex';
       }
-      setTimeout(updateStickyPosition, 50);
     };
 
     function renderTableHeader() {
-      headerRow.innerHTML = '<th style="width: 40px;" class="no-drag"></th>';
+      headerRow.innerHTML = '<th style="width: 32px;" class="no-drag"></th>';
       
       columns.forEach((col, index) => {
         const th = document.createElement('th');
-        th.style.width = col.width || 'auto';
 
         const container = document.createElement('div');
         container.className = 'th-header-content';
@@ -755,7 +649,7 @@
         if (col.key !== 'material' && col.key !== 'process' && col.key !== 'action') {
           const delBtn = document.createElement('button');
           delBtn.className = 'btn-del-col';
-          delBtn.innerText = '🗑️';
+          delBtn.innerText = '🗑️️';
           delBtn.title = '刪除此欄位';
           delBtn.onclick = (e) => {
             e.stopPropagation();
@@ -780,8 +674,6 @@
         }
         headerRow.appendChild(th);
       });
-
-      setTimeout(updateStickyPosition, 10);
     }
 
     window.editColumnName = (index) => {
@@ -807,7 +699,7 @@
 
       const colKey = 'col_' + Date.now();
       const actionIndex = columns.findIndex(c => c.key === 'action');
-      const newColObj = { key: colKey, label: colLabel.trim(), width: '180px' };
+      const newColObj = { key: colKey, label: colLabel.trim() };
 
       if (actionIndex !== -1) {
         columns.splice(actionIndex, 0, newColObj);
@@ -859,57 +751,70 @@
       return false;
     }
 
-    // --- 2. Material 獨立分頁渲染邏輯 ---
+    /* --- 1. 同材質自動跨行合併 (rowSpan) 渲染邏輯 --- */
     function renderTable() {
       tbody.innerHTML = '';
 
-      // 根據當前選擇的材質分頁進行過濾
-      const filteredData = selectedMaterial === 'ALL' 
-        ? roadmapData 
-        : roadmapData.filter(item => item.material === selectedMaterial);
+      let i = 0;
+      while (i < roadmapData.length) {
+        const currentMat = roadmapData[i].material || '';
+        let spanCount = 1;
 
-      filteredData.forEach((row) => {
-        const realIndex = roadmapData.indexOf(row);
-        const tr = document.createElement('tr');
-
-        if (auth.currentUser) {
-          tr.draggable = true;
-          tr.addEventListener('dragstart', (e) => handleRowDragStart(e, realIndex));
-          tr.addEventListener('dragover', handleRowDragOver);
-          tr.addEventListener('drop', (e) => handleRowDrop(e, realIndex));
-          tr.addEventListener('dragleave', handleRowDragLeave);
+        // 計算連續相同 Material 的列數
+        while (i + spanCount < roadmapData.length && (roadmapData[i + spanCount].material || '') === currentMat) {
+          spanCount++;
         }
 
-        const handleTd = document.createElement('td');
-        handleTd.className = 'drag-handle';
-        handleTd.innerHTML = '⋮⋮';
-        tr.appendChild(handleTd);
+        for (let j = 0; j < spanCount; j++) {
+          const rowIndex = i + j;
+          const row = roadmapData[rowIndex];
+          const tr = document.createElement('tr');
 
-        columns.forEach(col => {
-          if (col.key === 'material') {
-            const td = document.createElement('td');
-            td.className = 'editable';
-            td.style.fontWeight = '700';
-            td.style.color = '#0369a1';
-            td.innerText = row.material || '-';
-            td.ondblclick = () => editMaterialCategory(realIndex);
-            tr.appendChild(td);
-          } else if (col.key === 'action') {
-            const td = document.createElement('td');
-            td.style.textAlign = 'center';
-            td.innerHTML = `<button class="action-btn" onclick="deleteRow(${realIndex})" title="刪除此行">🗑️</button>`;
-            tr.appendChild(td);
-          } else {
-            const td = document.createElement('td');
-            td.className = 'editable';
-            td.innerText = row[col.key] || '-';
-            td.ondblclick = () => editCell(realIndex, col.key);
-            tr.appendChild(td);
+          if (auth.currentUser) {
+            tr.draggable = true;
+            tr.addEventListener('dragstart', (e) => handleRowDragStart(e, rowIndex));
+            tr.addEventListener('dragover', handleRowDragOver);
+            tr.addEventListener('drop', (e) => handleRowDrop(e, rowIndex));
+            tr.addEventListener('dragleave', handleRowDragLeave);
           }
-        });
 
-        tbody.appendChild(tr);
-      });
+          const handleTd = document.createElement('td');
+          handleTd.className = 'drag-handle';
+          handleTd.innerHTML = '⋮⋮';
+          tr.appendChild(handleTd);
+
+          columns.forEach(col => {
+            if (col.key === 'material') {
+              // 僅在該材質群組的第一列渲染 td，並設置 rowSpan
+              if (j === 0) {
+                const td = document.createElement('td');
+                td.className = 'editable material-cell';
+                td.style.fontWeight = '700';
+                td.style.color = '#0369a1';
+                td.rowSpan = spanCount;
+                td.innerText = currentMat || '-';
+                td.ondblclick = () => editMaterialCategory(rowIndex);
+                tr.appendChild(td);
+              }
+            } else if (col.key === 'action') {
+              const td = document.createElement('td');
+              td.style.textAlign = 'center';
+              td.innerHTML = `<button class="action-btn" onclick="deleteRow(${rowIndex})" title="刪除此行">🗑️</button>`;
+              tr.appendChild(td);
+            } else {
+              const td = document.createElement('td');
+              td.className = 'editable';
+              td.innerText = row[col.key] || '-';
+              td.ondblclick = () => editCell(rowIndex, col.key);
+              tr.appendChild(td);
+            }
+          });
+
+          tbody.appendChild(tr);
+        }
+
+        i += spanCount;
+      }
     }
 
     let draggedRowIndex = null;
@@ -1000,20 +905,16 @@
         cell.remove(); 
       });
 
-      const originalMinWidth = exportArea.style.minWidth;
-      exportArea.style.minWidth = "1600px";
-
       html2canvas(exportArea, { 
         backgroundColor: '#ffffff', 
-        scale: 4, 
+        scale: 3, 
         logging: false,
-        windowWidth: 1600,
         useCORS: true
       }).then(canvas => {
         const image = canvas.toDataURL("image/png");
         const link = document.createElement('a');
         link.href = image;
-        link.download = `Capacity_Roadmap_Clean_${new Date().toISOString().slice(0,10)}.png`;
+        link.download = `Capacity_Roadmap_${new Date().toISOString().slice(0,10)}.png`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -1026,7 +927,6 @@
           }
         });
 
-        exportArea.style.minWidth = originalMinWidth;
         exportArea.classList.remove('exporting');
         printTitle.style.display = 'none';
         exportBtn.innerText = "📸 匯出 Roadmap 圖片 (PNG)";
@@ -1042,7 +942,6 @@
           }
         });
 
-        exportArea.style.minWidth = originalMinWidth;
         exportArea.classList.remove('exporting');
         printTitle.style.display = 'none';
         exportBtn.innerText = "📸 匯出 Roadmap 圖片 (PNG)";
@@ -1114,7 +1013,6 @@
       const newVal = prompt("請輸入新的 Material 類別名稱：", oldVal);
       if (newVal !== null && newVal.trim() !== "") {
         roadmapData[index].material = newVal.trim();
-        renderMaterialTabs();
         saveToFirestore(roadmapData, columns);
       }
     };
@@ -1145,7 +1043,6 @@
 
       if (confirm(`確定要刪除「${roadmapData[index].process || '此筆資料'}」這一列嗎？`)) {
         roadmapData.splice(index, 1);
-        renderMaterialTabs();
         saveToFirestore(roadmapData, columns);
       }
     };
@@ -1156,8 +1053,7 @@
         return;
       }
 
-      const defaultMat = selectedMaterial !== 'ALL' ? selectedMaterial : "Metal: AL/SST";
-      const material = prompt("請輸入 Material 類別 (例如 Metal: AL/SST, Graphite 等)：", defaultMat);
+      const material = prompt("請輸入 Material 類別 (例如 Metal: AL/SST, Graphite 等)：", "Metal: AL/SST");
       if (!material) return;
       const process = prompt("請輸入 Process / Machine 名稱：", "New Machine");
       if (!process) return;
@@ -1170,7 +1066,6 @@
         y2026_2h: "0"
       });
 
-      renderMaterialTabs();
       saveToFirestore(roadmapData, columns);
     };
 
@@ -1213,7 +1108,6 @@
             alert("格式不符！請上傳正確的 Roadmap JSON 檔案。");
             return;
           }
-          renderMaterialTabs();
           saveToFirestore(roadmapData, columns);
           alert("JSON 資料成功匯入雲端！");
         } catch (err) {
@@ -1241,9 +1135,6 @@
         const worksheet = XLSX.utils.json_to_sheet(excelRows, { header: headers });
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Capacity Roadmap");
-
-        const colWidths = headers.map(h => ({ wch: Math.max(h.length * 2, 15) }));
-        worksheet['!cols'] = colWidths;
 
         XLSX.writeFile(workbook, `Capacity_Roadmap_${new Date().toISOString().slice(0,10)}.xlsx`);
       } catch (err) {
@@ -1294,20 +1185,20 @@
           }
 
           const newColumns = [
-            { key: 'material', label: jsonRows[0][matIdx] || 'Material', width: '160px' },
-            { key: 'process', label: jsonRows[0][procIdx] || 'Process / Machine', width: '220px' }
+            { key: 'material', label: jsonRows[0][matIdx] || 'Material' },
+            { key: 'process', label: jsonRows[0][procIdx] || 'Process / Machine' }
           ];
 
           const extraColMap = [];
           jsonRows[0].forEach((colName, idx) => {
             if (idx !== matIdx && idx !== procIdx && colName) {
               const key = 'col_' + idx + '_' + Date.now();
-              newColumns.push({ key: key, label: String(colName).trim(), width: '180px' });
+              newColumns.push({ key: key, label: String(colName).trim() });
               extraColMap.push({ index: idx, key: key });
             }
           });
 
-          newColumns.push({ key: 'action', label: '操作', width: '80px', noDrag: true });
+          newColumns.push({ key: 'action', label: '操作', noDrag: true });
 
           const parsedList = [];
           for (let i = 1; i < jsonRows.length; i++) {
@@ -1334,7 +1225,6 @@
           if (parsedList.length > 0) {
             roadmapData = parsedList;
             columns = newColumns;
-            renderMaterialTabs();
             saveToFirestore(roadmapData, columns);
             alert(`成功從 Excel 匯入 ${parsedList.length} 筆資料與自訂欄位！`);
           } else {
@@ -1357,15 +1247,13 @@
       if (confirm("警告：這將會清除雲端上的所有修改，恢復成預設數值與預設欄位！確定要重置嗎？")) {
         roadmapData = [...initialData];
         columns = [
-          { key: 'material', label: 'Material', width: '160px' },
-          { key: 'process', label: 'Process / Machine', width: '220px' },
-          { key: 'y2025', label: '2025', width: '150px' },
-          { key: 'y2026', label: '2026', width: '180px' },
-          { key: 'y2026_2h', label: '2026 2H', width: '180px' },
-          { key: 'action', label: '操作', width: '80px', noDrag: true }
+          { key: 'material', label: 'Material' },
+          { key: 'process', label: 'Process / Machine' },
+          { key: 'y2025', label: '2025' },
+          { key: 'y2026', label: '2026' },
+          { key: 'y2026_2h', label: '2026 2H' },
+          { key: 'action', label: '操作', noDrag: true }
         ];
-        selectedMaterial = 'ALL';
-        renderMaterialTabs();
         saveToFirestore(roadmapData, columns);
       }
     };

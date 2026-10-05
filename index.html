@@ -113,10 +113,11 @@
       color: var(--text-muted);
     }
 
+    /* 主要功能頁籤 */
     .nav-tabs {
       display: flex;
       gap: 10px;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
 
     .tab-btn {
@@ -137,6 +138,41 @@
       color: #fff;
       border-color: var(--accent);
       box-shadow: 0 3px 6px rgba(2, 132, 199, 0.3);
+    }
+
+    /* 材質分頁 sub-tabs */
+    .material-tabs-container {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      background: #e2e8f0;
+      padding: 6px;
+      border-radius: 8px;
+      border: 1px solid var(--border-light);
+    }
+
+    .mat-tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .mat-tab-btn:hover {
+      background: #cbd5e1;
+      color: var(--text-main);
+    }
+
+    .mat-tab-btn.active {
+      background: var(--card-bg);
+      color: var(--accent);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
     .toolbar {
@@ -180,11 +216,12 @@
       border: 1px solid var(--border-color);
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
       margin-bottom: 24px;
+      overflow-x: auto;
     }
 
     .tab-content.active { display: block; }
 
-    /* 表格 100% 滿版與欄位寬度自動調配 */
+    /* 表格 100% 滿版與欄位自適應 */
     table {
       width: 100%;
       table-layout: auto;
@@ -193,6 +230,7 @@
       text-align: left;
     }
 
+    /* 凍結窗格 1：固定標頭 */
     th {
       background-color: #cbd5e1;
       color: #0f172a;
@@ -209,7 +247,7 @@
       white-space: nowrap;
     }
 
-    /* 凍結窗格設定 */
+    /* 凍結窗格 2：固定拖曳控制欄與核心機台欄位 */
     th:nth-child(1),
     td:nth-child(1) {
       position: sticky;
@@ -223,14 +261,16 @@
       background-color: #cbd5e1;
     }
 
-    th:nth-child(2),
-    td.material-cell {
+    /* 凍結 Process / Machine 欄位 */
+    th.sticky-col-proc,
+    td.sticky-col-proc {
       position: sticky;
       left: 32px;
       z-index: 55;
       background-color: #f1f5f9;
+      border-right: 2px solid var(--border-light);
     }
-    th:nth-child(2) {
+    th.sticky-col-proc {
       z-index: 60;
       background-color: #cbd5e1;
     }
@@ -415,6 +455,11 @@
         <button class="tab-btn" onclick="switchTab('analytics-tab', event)">📈 機台增減動態分析</button>
       </div>
 
+      <!-- 材質分類分頁頁籤 -->
+      <div id="material-tabs" class="material-tabs-container">
+        <!-- JS 動態生成材質 Tab -->
+      </div>
+
       <div class="toolbar">
         <button id="add-row-btn" class="btn btn-primary">➕ 新增資料列</button>
         <button id="add-col-btn" class="btn btn-primary">➕ 新增欄位</button>
@@ -572,6 +617,7 @@
     ];
 
     let roadmapData = initialData;
+    let currentMaterialTab = 'ALL'; // 當前選擇的材質分頁
 
     const tbody = document.getElementById('table-body');
     const headerRow = document.getElementById('table-header-row');
@@ -580,6 +626,7 @@
     const authStatus = document.getElementById('auth-status');
     const loginModal = document.getElementById('login-modal');
     const lastUpdateTimeEl = document.getElementById('last-update-time');
+    const materialTabsContainer = document.getElementById('material-tabs');
 
     const docRef = doc(db, "capacity_roadmap", "main_data");
     onSnapshot(docRef, (docSnap) => {
@@ -588,12 +635,14 @@
         roadmapData = data.list || [];
         if (data.columns) columns = data.columns;
         if (data.updatedAt) lastUpdateTimeEl.innerText = data.updatedAt;
+        renderMaterialTabs();
         renderTableHeader();
         renderTable();
         renderAnalytics();
       } else {
         roadmapData = initialData;
         lastUpdateTimeEl.innerText = "預設資料";
+        renderMaterialTabs();
         renderTableHeader();
         renderTable();
         renderAnalytics();
@@ -624,16 +673,56 @@
       e.target.classList.add('active');
       document.getElementById(tabId).classList.add('active');
 
+      if (tabId === 'roadmap-tab') {
+        materialTabsContainer.style.display = 'flex';
+      } else {
+        materialTabsContainer.style.display = 'none';
+      }
+
       if (tabId === 'analytics-tab') {
         renderAnalytics();
       }
     };
 
+    /* --- 生成材質分頁 Tab --- */
+    function renderMaterialTabs() {
+      const materials = ['ALL'];
+      roadmapData.forEach(item => {
+        if (item.material && !materials.includes(item.material)) {
+          materials.push(item.material);
+        }
+      });
+
+      materialTabsContainer.innerHTML = '';
+      materials.forEach(mat => {
+        const btn = document.createElement('button');
+        btn.className = `mat-tab-btn ${currentMaterialTab === mat ? 'active' : ''}`;
+        btn.innerText = mat === 'ALL' ? '🌐 全部材質 (All)' : mat;
+        btn.onclick = () => {
+          currentMaterialTab = mat;
+          renderMaterialTabs();
+          renderTableHeader();
+          renderTable();
+        };
+        materialTabsContainer.appendChild(btn);
+      });
+    }
+
+    /* --- 動態渲染表頭與凍結設定 --- */
     function renderTableHeader() {
       headerRow.innerHTML = '<th style="width: 32px;" class="no-drag"></th>';
       
-      columns.forEach((col, index) => {
+      const activeCols = columns.filter(col => {
+        if (currentMaterialTab !== 'ALL' && col.key === 'material') return false;
+        return true;
+      });
+
+      activeCols.forEach((col, index) => {
         const th = document.createElement('th');
+
+        if (col.key === 'process') {
+          th.classList.add('sticky-col-proc');
+        }
 
         const container = document.createElement('div');
         container.className = 'th-header-content';
@@ -642,18 +731,18 @@
         titleSpan.className = 'th-title';
         titleSpan.innerText = col.label;
         titleSpan.title = "雙擊此處修改欄位名稱";
-        titleSpan.ondblclick = () => editColumnName(index);
+        titleSpan.ondblclick = () => editColumnName(columns.indexOf(col));
 
         container.appendChild(titleSpan);
 
         if (col.key !== 'material' && col.key !== 'process' && col.key !== 'action') {
           const delBtn = document.createElement('button');
           delBtn.className = 'btn-del-col';
-          delBtn.innerText = '🗑️️';
+          delBtn.innerText = '🗑';
           delBtn.title = '刪除此欄位';
           delBtn.onclick = (e) => {
             e.stopPropagation();
-            deleteColumn(index);
+            deleteColumn(columns.indexOf(col));
           };
           container.appendChild(delBtn);
         }
@@ -664,9 +753,9 @@
           th.classList.add('draggable-col');
           if (auth.currentUser) {
             th.draggable = true;
-            th.addEventListener('dragstart', (e) => handleColDragStart(e, index));
+            th.addEventListener('dragstart', (e) => handleColDragStart(e, columns.indexOf(col)));
             th.addEventListener('dragover', handleColDragOver);
-            th.addEventListener('drop', (e) => handleColDrop(e, index));
+            th.addEventListener('drop', (e) => handleColDrop(e, columns.indexOf(col)));
             th.addEventListener('dragleave', handleColDragLeave);
           }
         } else {
@@ -751,30 +840,42 @@
       return false;
     }
 
-    /* --- 1. 同材質自動跨行合併 (rowSpan) 渲染邏輯 --- */
+    /* --- 渲染表格內容（包含分材質頁籤過濾與同材質跨行合併） --- */
     function renderTable() {
       tbody.innerHTML = '';
 
+      const filteredIndices = [];
+      roadmapData.forEach((row, idx) => {
+        if (currentMaterialTab === 'ALL' || row.material === currentMaterialTab) {
+          filteredIndices.push(idx);
+        }
+      });
+
       let i = 0;
-      while (i < roadmapData.length) {
-        const currentMat = roadmapData[i].material || '';
+      while (i < filteredIndices.length) {
+        const realIdx = filteredIndices[i];
+        const currentMat = roadmapData[realIdx].material || '';
         let spanCount = 1;
 
-        // 計算連續相同 Material 的列數
-        while (i + spanCount < roadmapData.length && (roadmapData[i + spanCount].material || '') === currentMat) {
-          spanCount++;
+        if (currentMaterialTab === 'ALL') {
+          while (
+            i + spanCount < filteredIndices.length &&
+            (roadmapData[filteredIndices[i + spanCount]].material || '') === currentMat
+          ) {
+            spanCount++;
+          }
         }
 
         for (let j = 0; j < spanCount; j++) {
-          const rowIndex = i + j;
-          const row = roadmapData[rowIndex];
+          const currentRealIdx = filteredIndices[i + j];
+          const row = roadmapData[currentRealIdx];
           const tr = document.createElement('tr');
 
           if (auth.currentUser) {
             tr.draggable = true;
-            tr.addEventListener('dragstart', (e) => handleRowDragStart(e, rowIndex));
+            tr.addEventListener('dragstart', (e) => handleRowDragStart(e, currentRealIdx));
             tr.addEventListener('dragover', handleRowDragOver);
-            tr.addEventListener('drop', (e) => handleRowDrop(e, rowIndex));
+            tr.addEventListener('drop', (e) => handleRowDrop(e, currentRealIdx));
             tr.addEventListener('dragleave', handleRowDragLeave);
           }
 
@@ -785,27 +886,32 @@
 
           columns.forEach(col => {
             if (col.key === 'material') {
-              // 僅在該材質群組的第一列渲染 td，並設置 rowSpan
-              if (j === 0) {
-                const td = document.createElement('td');
-                td.className = 'editable material-cell';
-                td.style.fontWeight = '700';
-                td.style.color = '#0369a1';
-                td.rowSpan = spanCount;
-                td.innerText = currentMat || '-';
-                td.ondblclick = () => editMaterialCategory(rowIndex);
-                tr.appendChild(td);
+              if (currentMaterialTab === 'ALL') {
+                if (j === 0) {
+                  const td = document.createElement('td');
+                  td.className = 'editable material-cell';
+                  td.style.fontWeight = '700';
+                  td.style.color = '#0369a1';
+                  td.rowSpan = spanCount;
+                  td.innerText = currentMat || '-';
+                  td.ondblclick = () => editMaterialCategory(currentRealIdx);
+                  tr.appendChild(td);
+                }
               }
             } else if (col.key === 'action') {
               const td = document.createElement('td');
               td.style.textAlign = 'center';
-              td.innerHTML = `<button class="action-btn" onclick="deleteRow(${rowIndex})" title="刪除此行">🗑️</button>`;
+              td.innerHTML = `<button class="action-btn" onclick="deleteRow(${currentRealIdx})" title="刪除此行">🗑️</button>`;
               tr.appendChild(td);
             } else {
               const td = document.createElement('td');
               td.className = 'editable';
+              if (col.key === 'process') {
+                td.classList.add('sticky-col-proc');
+                td.style.fontWeight = '600';
+              }
               td.innerText = row[col.key] || '-';
-              td.ondblclick = () => editCell(rowIndex, col.key);
+              td.ondblclick = () => editCell(currentRealIdx, col.key);
               tr.appendChild(td);
             }
           });
@@ -914,7 +1020,7 @@
         const image = canvas.toDataURL("image/png");
         const link = document.createElement('a');
         link.href = image;
-        link.download = `Capacity_Roadmap_${new Date().toISOString().slice(0,10)}.png`;
+        link.download = `Capacity_Roadmap_${currentMaterialTab}_${new Date().toISOString().slice(0,10)}.png`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -963,6 +1069,7 @@
         authBtn.classList.remove("btn-danger");
         authBtn.classList.add("btn-primary");
       }
+      renderMaterialTabs();
       renderTableHeader();
       renderTable();
     });
@@ -1053,7 +1160,8 @@
         return;
       }
 
-      const material = prompt("請輸入 Material 類別 (例如 Metal: AL/SST, Graphite 等)：", "Metal: AL/SST");
+      const defaultMat = currentMaterialTab !== 'ALL' ? currentMaterialTab : "Metal: AL/SST";
+      const material = prompt("請輸入 Material 類別 (例如 Metal: AL/SST, Graphite 等)：", defaultMat);
       if (!material) return;
       const process = prompt("請輸入 Process / Machine 名稱：", "New Machine");
       if (!process) return;

@@ -9,11 +9,12 @@
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <style>
     :root {
-      --bg-color: #f1f5f9;
+      --bg-color: #f8fafc;
       --card-bg: #ffffff;
-      --border-color: #cbd5e1;
-      --text-main: #1e293b;
-      --text-muted: #64748b;
+      --border-color: #94a3b8; /* 強化邊框對比 */
+      --border-light: #cbd5e1;
+      --text-main: #0f172a;   /* 加深主要文字顏色，提升清晰度 */
+      --text-muted: #475569;  /* 加深次要文字 */
       --accent: #0284c7;
       --accent-hover: #0369a1;
       --success: #059669;
@@ -26,15 +27,17 @@
     html, body {
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       background-color: var(--bg-color);
       color: var(--text-main);
+      font-size: 16px; /* 提高基礎字型大小 */
+      line-height: 1.5;
     }
 
     .app-container {
       display: flex;
       flex-direction: column;
-      padding: 16px 24px;
+      padding: 20px 32px;
     }
 
     .sticky-header-wrapper {
@@ -42,86 +45,89 @@
       top: 0;
       z-index: 100;
       background-color: var(--bg-color);
-      padding-top: 8px;
+      padding-top: 12px;
     }
 
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 12px;
+      margin-bottom: 12px;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 16px;
     }
 
     .brand-title {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 16px;
     }
 
     .badge-pro {
       background: linear-gradient(135deg, #0284c7, #4f46e5);
       color: #fff;
-      font-size: 0.75rem;
+      font-size: 0.85rem;
       font-weight: 800;
-      padding: 3px 10px;
-      border-radius: 4px;
+      padding: 4px 12px;
+      border-radius: 6px;
       letter-spacing: 0.05em;
     }
 
     h1 {
       margin: 0;
-      font-size: 1.4rem;
-      font-weight: 700;
+      font-size: 1.75rem; /* 放大標題 */
+      font-weight: 800;
       color: var(--text-main);
+      letter-spacing: -0.02em;
     }
 
     /* 上次更新時間標籤樣式 */
     .last-update-bar {
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 0.82rem;
+      gap: 8px;
+      font-size: 0.95rem; /* 放大更新時間文字 */
       color: var(--text-muted);
-      margin-bottom: 12px;
+      margin-bottom: 16px;
       background: #e2e8f0;
-      padding: 4px 12px;
-      border-radius: 6px;
+      padding: 6px 16px;
+      border-radius: 8px;
       width: fit-content;
       font-weight: 600;
+      border: 1px solid var(--border-light);
     }
 
     .auth-box {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 16px;
       background: var(--card-bg);
-      padding: 6px 14px;
+      padding: 8px 18px;
       border-radius: 8px;
       border: 1px solid var(--border-color);
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
 
     .auth-status {
-      font-size: 0.85rem;
+      font-size: 0.95rem;
+      font-weight: 600;
       color: var(--text-muted);
     }
 
     .nav-tabs {
       display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
+      gap: 12px;
+      margin-bottom: 16px;
     }
 
     .tab-btn {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
       color: var(--text-muted);
-      padding: 8px 20px;
+      padding: 10px 24px;
       border-radius: 8px;
-      font-weight: 600;
-      font-size: 0.9rem;
+      font-weight: 700;
+      font-size: 1.05rem; /* 放大頁籤文字 */
       cursor: pointer;
       transition: all 0.2s;
       box-shadow: 0 1px 2px rgba(0,0,0,0.05);
@@ -131,13 +137,13 @@
       background: var(--accent);
       color: #fff;
       border-color: var(--accent);
-      box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.2);
+      box-shadow: 0 4px 8px rgba(2, 132, 199, 0.3);
     }
 
     .toolbar {
       display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
+      gap: 10px;
+      margin-bottom: 16px;
       flex-wrap: wrap;
       align-items: center;
     }
@@ -146,11 +152,11 @@
       background-color: var(--card-bg);
       color: var(--text-main);
       border: 1px solid var(--border-color);
-      padding: 6px 12px;
-      border-radius: 6px;
+      padding: 8px 16px;
+      border-radius: 8px;
       cursor: pointer;
-      font-weight: 600;
-      font-size: 0.85rem;
+      font-weight: 700;
+      font-size: 0.95rem; /* 放大工具列按鈕文字 */
       transition: all 0.2s;
       box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     }
@@ -158,7 +164,7 @@
     .btn:hover {
       border-color: var(--accent);
       color: var(--accent);
-      background-color: #f8fafc;
+      background-color: #f1f5f9;
     }
 
     .btn-primary { background-color: var(--accent); color: #fff; border: none; }
@@ -171,10 +177,11 @@
     .tab-content {
       display: none;
       background-color: var(--card-bg);
-      border-radius: 10px;
+      border-radius: 12px;
       border: 1px solid var(--border-color);
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-      margin-bottom: 24px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+      margin-bottom: 32px;
+      overflow: hidden;
     }
 
     .tab-content.active { display: block; }
@@ -186,13 +193,13 @@
     }
 
     th {
-      background-color: #e2e8f0;
-      color: #334155;
-      font-weight: 700;
-      font-size: 0.85rem;
+      background-color: #cbd5e1; /* 提升標頭底色對比 */
+      color: #0f172a;
+      font-weight: 800;
+      font-size: 1.05rem; /* 放大表頭字體 */
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 10px 14px;
+      letter-spacing: 0.02em;
+      padding: 14px 18px; /* 加大內邊距 */
       border-bottom: 2px solid var(--border-color);
       position: sticky;
       top: 0;
@@ -204,7 +211,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 6px;
+      gap: 8px;
     }
 
     .th-title {
@@ -221,72 +228,74 @@
       border: none;
       color: var(--text-muted);
       cursor: pointer;
-      font-size: 0.75rem;
-      padding: 2px 4px;
-      border-radius: 3px;
+      font-size: 0.9rem;
+      padding: 4px 6px;
+      border-radius: 4px;
     }
-    .btn-del-col:hover { color: var(--danger); background: rgba(220, 38, 38, 0.1); }
+    .btn-del-col:hover { color: var(--danger); background: rgba(220, 38, 38, 0.15); }
     body.read-only .btn-del-col { display: none; }
 
     body:not(.read-only) th.draggable-col { cursor: grab; }
     body:not(.read-only) th.draggable-col:active { cursor: grabbing; }
 
     td {
-      padding: 6px 14px;
-      border-bottom: 1px solid var(--border-color);
-      font-size: 0.82rem;
+      padding: 12px 18px; /* 加大內容列內邊距 */
+      border-bottom: 1px solid var(--border-light);
+      font-size: 1.02rem; /* 放大單元格字體 */
+      font-weight: 500;
       color: var(--text-main);
       vertical-align: middle;
     }
 
-    tr:hover td { background-color: #f8fafc; }
+    tr:hover td { background-color: #f1f5f9; }
 
     .drag-handle {
       cursor: grab;
-      color: var(--text-muted);
-      font-size: 1rem;
+      color: #94a3b8;
+      font-size: 1.25rem; /* 放大拖拽圖示 */
       text-align: center;
-      width: 30px;
+      width: 40px;
       user-select: none;
     }
     .drag-handle:active { cursor: grabbing; }
     body.read-only .drag-handle { display: none; }
 
-    .drag-over-row { border-top: 2px solid var(--accent) !important; }
-    .drag-over-col { border-left: 2px solid var(--accent) !important; }
+    .drag-over-row { border-top: 3px solid var(--accent) !important; }
+    .drag-over-col { border-left: 3px solid var(--accent) !important; }
 
     .material-header {
-      font-weight: 700;
-      color: var(--accent);
+      font-weight: 800;
+      font-size: 1.08rem; /* 放大 Material 分類標題 */
+      color: #0369a1;
       background-color: #f1f5f9;
       vertical-align: middle;
-      border-right: 1px solid var(--border-color);
+      border-right: 2px solid var(--border-color);
     }
 
     .analytics-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
-      padding: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      padding: 24px;
     }
 
     .stat-card {
       background: #f8fafc;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 16px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+      border: 2px solid var(--border-light);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
     }
 
-    .stat-card-title { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; }
-    .stat-card-value { font-size: 1.6rem; font-weight: 700; color: var(--success); }
+    .stat-card-title { font-size: 1.05rem; color: var(--text-muted); margin-bottom: 8px; font-weight: 700; }
+    .stat-card-value { font-size: 2.2rem; font-weight: 800; color: var(--success); }
 
     .delta-badge {
       display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 0.8rem;
-      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 800;
     }
     .delta-plus { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
     .delta-new { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
@@ -295,10 +304,10 @@
     body:not(.read-only) .editable { cursor: pointer; }
     body:not(.read-only) .editable:hover {
       background-color: #e0f2fe !important;
-      outline: 1px dashed var(--accent);
+      outline: 2px dashed var(--accent);
     }
 
-    .action-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.9rem; }
+    .action-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; }
     body:not(.read-only) .action-btn:hover { color: var(--danger); }
     body.read-only .action-btn { opacity: 0.3; cursor: not-allowed; }
 
@@ -319,38 +328,38 @@
       background: var(--card-bg);
       border: 1px solid var(--border-color);
       border-radius: 12px;
-      padding: 24px;
+      padding: 28px;
       width: 100%;
-      max-width: 360px;
+      max-width: 400px;
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
     }
-    .modal-card h3 { margin-top: 0; margin-bottom: 16px; color: var(--accent); }
+    .modal-card h3 { margin-top: 0; margin-bottom: 20px; color: var(--accent); font-size: 1.3rem; }
     .modal-input {
       width: 100%;
-      padding: 10px 12px;
-      margin-bottom: 12px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
       background: #f8fafc;
       border: 1px solid var(--border-color);
-      border-radius: 6px;
+      border-radius: 8px;
       color: var(--text-main);
-      font-size: 0.9rem;
+      font-size: 1rem;
     }
     .modal-input:focus { outline: none; border-color: var(--accent); }
-    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 12px; }
 
     #roadmap-export-area {
       background: #ffffff;
-      padding: 20px;
-      border-radius: 8px;
+      padding: 24px;
+      border-radius: 10px;
     }
     .export-header-title {
       display: none;
-      font-size: 1.5rem;
-      font-weight: 700;
+      font-size: 1.8rem;
+      font-weight: 800;
       color: #1e293b;
-      margin-bottom: 12px;
-      border-bottom: 2px solid var(--accent);
-      padding-bottom: 6px;
+      margin-bottom: 16px;
+      border-bottom: 3px solid var(--accent);
+      padding-bottom: 8px;
     }
 
     #roadmap-export-area.exporting .drag-handle,
@@ -408,7 +417,7 @@
         <table id="main-roadmap-table">
           <thead>
             <tr id="table-header-row">
-              <th style="width: 35px;" class="no-drag"></th>
+              <th style="width: 40px;" class="no-drag"></th>
             </tr>
           </thead>
           <tbody id="table-body">
@@ -419,7 +428,7 @@
 
     <!-- 頁面二：機台增減分析 -->
     <div id="analytics-tab" class="tab-content">
-      <div class="toolbar" style="padding: 12px 20px 0 20px; justify-content: flex-end;">
+      <div class="toolbar" style="padding: 16px 24px 0 24px; justify-content: flex-end;">
         <button id="export-image-btn" class="btn btn-success">📸 匯出分析圖表圖片 (PNG)</button>
       </div>
       <div id="analytics-export-area">
@@ -433,8 +442,8 @@
             <div id="stat-20262h-exp" class="stat-card-value" style="color: #0284c7;">0 項</div>
           </div>
         </div>
-        <div style="padding: 0 20px 20px 20px;">
-          <h3 style="color: var(--accent); margin-top: 0;">🔍 機台擴產與異動明細分析清單</h3>
+        <div style="padding: 0 24px 24px 24px;">
+          <h3 style="color: var(--accent); margin-top: 0; font-size: 1.3rem;">🔍 機台擴產與異動明細分析清單</h3>
           <table>
             <thead>
               <tr>
@@ -619,7 +628,7 @@
     };
 
     function renderTableHeader() {
-      headerRow.innerHTML = '<th style="width: 35px;" class="no-drag"></th>';
+      headerRow.innerHTML = '<th style="width: 40px;" class="no-drag"></th>';
       
       columns.forEach((col, index) => {
         const th = document.createElement('th');

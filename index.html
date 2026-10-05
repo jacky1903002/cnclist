@@ -281,7 +281,7 @@
       background-color: #cbd5e1;
     }
 
-    /* 縮小版的 Material 樣式 */
+    /* 縮小版的 Material 樣式（應用於材質分頁） */
     .material-cell-small {
       font-size: 0.78rem !important;
       color: #64748b !important;
@@ -290,6 +290,7 @@
       word-break: break-word !important;
       line-height: 1.2 !important;
       padding: 6px 8px !important;
+      vertical-align: middle !important;
     }
 
     /* 凍結窗格 4：固定左側 Process / Machine 欄位 (left: 32px + 90px = 122px) */
@@ -869,7 +870,7 @@
       return false;
     }
 
-    /* --- 渲染表格內容（支援單一材質下 Material 欄位縮小呈現） --- */
+    /* --- 渲染表格內容（全部及分頁切換時，同材質名稱皆自動合併儲存格） --- */
     function renderTable() {
       tbody.innerHTML = '';
 
@@ -886,13 +887,12 @@
         const currentMat = roadmapData[realIdx].material || '';
         let spanCount = 1;
 
-        if (currentMaterialTab === 'ALL') {
-          while (
-            i + spanCount < filteredIndices.length &&
-            (roadmapData[filteredIndices[i + spanCount]].material || '') === currentMat
-          ) {
-            spanCount++;
-          }
+        // 計算相同名稱的連續列數（無論是否在分頁，只要名稱相同就合併）
+        while (
+          i + spanCount < filteredIndices.length &&
+          (roadmapData[filteredIndices[i + spanCount]].material || '') === currentMat
+        ) {
+          spanCount++;
         }
 
         for (let j = 0; j < spanCount; j++) {
@@ -915,23 +915,21 @@
 
           columns.forEach(col => {
             if (col.key === 'material') {
-              if (currentMaterialTab === 'ALL') {
-                if (j === 0) {
-                  const td = document.createElement('td');
+              if (j === 0) {
+                const td = document.createElement('td');
+                td.rowSpan = spanCount;
+                td.ondblclick = () => editMaterialCategory(currentRealIdx);
+
+                if (currentMaterialTab === 'ALL') {
                   td.className = 'editable material-cell sticky-col-mat';
                   td.style.fontWeight = '700';
                   td.style.color = '#0369a1';
-                  td.rowSpan = spanCount;
-                  td.innerText = currentMat || '-';
-                  td.ondblclick = () => editMaterialCategory(currentRealIdx);
-                  tr.appendChild(td);
+                } else {
+                  // 材質分頁專用：精簡版合併儲存格（小字體、微寬度限制）
+                  td.className = 'editable material-cell-small sticky-col-mat';
                 }
-              } else {
-                // 單一材質頁籤：精簡版 Material 欄位，縮小字型與欄寬
-                const td = document.createElement('td');
-                td.className = 'editable material-cell-small sticky-col-mat';
+
                 td.innerText = currentMat || '-';
-                td.ondblclick = () => editMaterialCategory(currentRealIdx);
                 tr.appendChild(td);
               }
             } else if (col.key === 'action') {

@@ -34,10 +34,78 @@
       line-height: 1.3;
     }
 
+    /* 預設隱藏主要內容，未登入前不可見 */
     .app-container {
-      display: flex;
+      display: none;
       flex-direction: column;
       padding: 8px 16px;
+    }
+
+    /* 全螢幕登入入口 Portal CSS */
+    .login-portal-overlay {
+      display: flex;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .login-card-portal {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 32px 28px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    .login-card-portal h2 {
+      margin-top: 0;
+      margin-bottom: 8px;
+      color: var(--text-main);
+      font-size: 1.4rem;
+      font-weight: 800;
+    }
+
+    .login-card-portal p {
+      margin-top: 0;
+      margin-bottom: 24px;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+
+    .portal-input {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 14px;
+      background: #f8fafc;
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      color: var(--text-main);
+      font-size: 0.95rem;
+      transition: border-color 0.2s;
+    }
+
+    .portal-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: #fff;
+    }
+
+    .btn-login-submit {
+      width: 100%;
+      padding: 10px 0;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 6px;
+      margin-top: 6px;
+      cursor: pointer;
     }
 
     .sticky-header-wrapper {
@@ -101,7 +169,6 @@
       color: var(--text-muted);
     }
 
-    /* 頂部整合控制欄 (更新時間 + 主要頁籤 + 材質分頁 集中一列) */
     .compact-control-bar {
       display: flex;
       align-items: center;
@@ -212,7 +279,6 @@
     .btn-danger { background-color: #ffeeef; color: var(--danger); border: 1px solid #fecaca; }
     .btn-danger:hover { background-color: var(--danger); color: #fff; }
 
-    /* 下方表格容器：充分利用垂直空間 */
     .tab-content {
       display: none;
       background-color: var(--card-bg);
@@ -402,42 +468,6 @@
     body:not(.read-only) .action-btn:hover { color: var(--danger); }
     body.read-only .action-btn { opacity: 0.3; cursor: not-allowed; }
 
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(4px);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-    .modal-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 20px;
-      width: 100%;
-      max-width: 360px;
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    }
-    .modal-card h3 { margin-top: 0; margin-bottom: 12px; color: var(--accent); font-size: 1.1rem; }
-    .modal-input {
-      width: 100%;
-      padding: 8px 10px;
-      margin-bottom: 12px;
-      background: #f8fafc;
-      border: 1px solid var(--border-color);
-      border-radius: 5px;
-      color: var(--text-main);
-      font-size: 0.9rem;
-    }
-    .modal-input:focus { outline: none; border-color: var(--accent); }
-    .modal-actions { display: flex; justify-content: flex-end; gap: 6px; margin-top: 6px; }
-
     #roadmap-export-area {
       background: #ffffff;
       padding: 12px;
@@ -462,9 +492,22 @@
     }
   </style>
 </head>
-<body class="read-only">
+<body>
 
-  <div class="app-container">
+  <!-- 入口登入全螢幕視窗 (預設顯示) -->
+  <div id="login-portal" class="login-portal-overlay">
+    <div class="login-card-portal">
+      <div style="margin-bottom: 12px;"><span class="badge-pro" style="font-size: 0.85rem;">ENTERPRISE PORTAL</span></div>
+      <h2>系統登入</h2>
+      <p>請輸入 Firebase 帳號密碼以存取專案內容</p>
+      <input type="email" id="portal-email" class="portal-input" placeholder="電子郵件 (Email)">
+      <input type="password" id="portal-password" class="portal-input" placeholder="密碼 (Password)">
+      <button id="portal-login-btn" class="btn btn-primary btn-login-submit">登入系統</button>
+    </div>
+  </div>
+
+  <!-- 主要專案容器 (登入後才會顯示) -->
+  <div class="app-container" id="app-container">
     <div class="sticky-header-wrapper" id="sticky-header">
       <header>
         <div class="brand-title">
@@ -472,8 +515,8 @@
           <h1>2026 Capacity Roadmap & Machine Analytics</h1>
         </div>
         <div class="auth-box">
-          <span id="auth-status" class="auth-status">唯讀模式</span>
-          <button id="auth-btn" class="btn btn-primary">管理員登入</button>
+          <span id="auth-status" class="auth-status">已驗證登入</span>
+          <button id="auth-btn" class="btn btn-danger">登出系統</button>
         </div>
       </header>
 
@@ -562,19 +605,6 @@
     </div>
   </div>
 
-  <!-- 管理員登入 Modal -->
-  <div id="login-modal" class="modal-overlay">
-    <div class="modal-card">
-      <h3>🔐 管理員登入</h3>
-      <input type="email" id="login-email" class="modal-input" placeholder="管理員 Email">
-      <input type="password" id="login-password" class="modal-input" placeholder="密碼">
-      <div class="modal-actions">
-        <button id="cancel-login-btn" class="btn">取消</button>
-        <button id="do-login-btn" class="btn btn-primary">確認登入</button>
-      </div>
-    </div>
-  </div>
-
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -659,36 +689,87 @@
     const analyticsTbody = document.getElementById('analytics-tbody');
     const authBtn = document.getElementById('auth-btn');
     const authStatus = document.getElementById('auth-status');
-    const loginModal = document.getElementById('login-modal');
+    const loginPortal = document.getElementById('login-portal');
+    const appContainer = document.getElementById('app-container');
     const lastUpdateTimeEl = document.getElementById('last-update-time');
     const materialTabsContainer = document.getElementById('material-tabs');
 
-    const docRef = doc(db, "capacity_roadmap", "main_data");
-    onSnapshot(docRef, (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        roadmapData = data.list || [];
-        if (data.columns) columns = data.columns;
-        if (data.updatedAt) lastUpdateTimeEl.innerText = data.updatedAt;
-        renderMaterialTabs();
-        renderTableHeader();
-        renderTable();
-        renderAnalytics();
+    // Firebase 登入狀態監聽：控制頁面顯示與隱藏
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // 已登入：隱藏入口登入畫面，顯示主要專案內容
+        loginPortal.style.display = "none";
+        appContainer.style.display = "flex";
+        document.body.classList.remove("read-only");
+
+        authStatus.innerText = `使用者：${user.email}`;
+        
+        // 開始監聽 Firestore 資料
+        initFirestoreListener();
       } else {
-        roadmapData = initialData;
-        lastUpdateTimeEl.innerText = "預設資料";
+        // 未登入：顯示全螢幕登入畫面，隱藏主內容
+        loginPortal.style.display = "flex";
+        appContainer.style.display = "none";
+        document.body.classList.add("read-only");
+      }
+    });
+
+    // 處理入口登入邏輯
+    const handlePortalLogin = async () => {
+      const email = document.getElementById('portal-email').value.trim();
+      const password = document.getElementById('portal-password').value;
+
+      if (!email || !password) {
+        alert("請輸入 Email 與密碼！");
+        return;
+      }
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        document.getElementById('portal-email').value = '';
+        document.getElementById('portal-password').value = '';
+      } catch (err) {
+        alert("登入失敗：帳號或密碼錯誤！(" + err.message + ")");
+      }
+    };
+
+    document.getElementById('portal-login-btn').onclick = handlePortalLogin;
+    document.getElementById('portal-password').addEventListener('keyup', (e) => {
+      if (e.key === 'Enter') handlePortalLogin();
+    });
+
+    // 登出按鈕
+    authBtn.onclick = async () => {
+      if (confirm("確定要登出系統嗎？")) {
+        await signOut(auth);
+      }
+    };
+
+    // Firestore 雲端資料即時監聽
+    const docRef = doc(db, "capacity_roadmap", "main_data");
+    function initFirestoreListener() {
+      onSnapshot(docRef, (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          roadmapData = data.list || [];
+          if (data.columns) columns = data.columns;
+          if (data.updatedAt) lastUpdateTimeEl.innerText = data.updatedAt;
+        } else {
+          roadmapData = initialData;
+          lastUpdateTimeEl.innerText = "預設資料";
+        }
         renderMaterialTabs();
         renderTableHeader();
         renderTable();
         renderAnalytics();
-      }
-    }, (error) => {
-      console.warn("Firestore 監聽通知：", error.message);
-    });
+      }, (error) => {
+        console.warn("Firestore 監聽通知：", error.message);
+      });
+    }
 
     async function saveToFirestore(data, cols = columns) {
       if (!auth.currentUser) {
-        alert("請先進行管理員登入，才能將資料同步至雲端！");
+        alert("請先進行登入，才能將資料同步至雲端！");
         return;
       }
       try {
@@ -796,10 +877,7 @@
     }
 
     window.editColumnName = (index) => {
-      if (!auth.currentUser) {
-        alert("權限不足：必須登入管理員帳號才能修改欄位名稱！");
-        return;
-      }
+      if (!auth.currentUser) return;
       const oldLabel = columns[index].label;
       const newLabel = prompt("請輸入新的欄位名稱：", oldLabel);
       if (newLabel !== null && newLabel.trim() !== "") {
@@ -809,10 +887,7 @@
     };
 
     document.getElementById('add-col-btn').onclick = () => {
-      if (!auth.currentUser) {
-        alert("權限不足：必須登入管理員帳號才能新增欄位！");
-        return;
-      }
+      if (!auth.currentUser) return;
       const colLabel = prompt("請輸入新欄位名稱 (例如：2027 預估)：", "新欄位");
       if (!colLabel) return;
 
@@ -830,10 +905,7 @@
     };
 
     window.deleteColumn = (index) => {
-      if (!auth.currentUser) {
-        alert("權限不足：必須登入管理員帳號才能刪除欄位！");
-        return;
-      }
+      if (!auth.currentUser) return;
       const col = columns[index];
       if (confirm(`確定要刪除欄位「${col.label}」嗎？這將會清除所有資料列中該欄位的數據！`)) {
         columns.splice(index, 1);
@@ -1086,67 +1158,8 @@
       });
     };
 
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        document.body.classList.remove("read-only");
-        authStatus.innerText = `已登入 (${user.email})`;
-        authBtn.innerText = "登出";
-        authBtn.classList.remove("btn-primary");
-        authBtn.classList.add("btn-danger");
-      } else {
-        document.body.classList.add("read-only");
-        authStatus.innerText = "唯讀模式";
-        authBtn.innerText = "管理員登入";
-        authBtn.classList.remove("btn-danger");
-        authBtn.classList.add("btn-primary");
-      }
-      renderMaterialTabs();
-      renderTableHeader();
-      renderTable();
-    });
-
-    authBtn.onclick = async () => {
-      if (auth.currentUser) {
-        await signOut(auth);
-      } else {
-        loginModal.style.display = 'flex';
-      }
-    };
-
-    document.getElementById('cancel-login-btn').onclick = () => {
-      loginModal.style.display = 'none';
-    };
-
-    const doLogin = async () => {
-      const email = document.getElementById('login-email').value;
-      const password = document.getElementById('login-password').value;
-
-      if (!email || !password) {
-        alert("請輸入 Email 與密碼！");
-        return;
-      }
-
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        loginModal.style.display = 'none';
-        document.getElementById('login-email').value = '';
-        document.getElementById('login-password').value = '';
-      } catch (err) {
-        alert("登入失敗：帳號或密碼錯誤！(" + err.message + ")");
-      }
-    };
-
-    document.getElementById('do-login-btn').onclick = doLogin;
-    document.getElementById('login-password').addEventListener('keyup', (e) => {
-      if (e.key === 'Enter') doLogin();
-    });
-
     window.editMaterialCategory = (index) => {
-      if (!auth.currentUser) {
-        alert("權限不足：必須登入管理員帳號才能修改資料！");
-        return;
-      }
-
+      if (!auth.currentUser) return;
       const oldVal = roadmapData[index].material || '';
       const newVal = prompt("請輸入新的 Material 類別名稱：", oldVal);
       if (newVal !== null && newVal.trim() !== "") {
@@ -1156,11 +1169,7 @@
     };
 
     window.editCell = (index, key) => {
-      if (!auth.currentUser) {
-        alert("權限不足：必須登入管理員帳號才能修改資料！");
-        return;
-      }
-
+      if (!auth.currentUser) return;
       const colObj = columns.find(c => c.key === key);
       const label = colObj ? colObj.label : key;
 
@@ -1174,11 +1183,7 @@
     };
 
     window.deleteRow = (index) => {
-      if (!auth.currentUser) {
-        alert("權限不足：必須登入管理員帳號才能刪除資料！");
-        return;
-      }
-
+      if (!auth.currentUser) return;
       if (confirm(`確定要刪除「${roadmapData[index].process || '此筆資料'}」這一列嗎？`)) {
         roadmapData.splice(index, 1);
         saveToFirestore(roadmapData, columns);
@@ -1186,11 +1191,7 @@
     };
 
     document.getElementById('add-row-btn').onclick = () => {
-      if (!auth.currentUser) {
-        alert("權限不足：必須登入管理員帳號才能新增資料！");
-        return;
-      }
-
+      if (!auth.currentUser) return;
       const defaultMat = currentMaterialTab !== 'ALL' ? currentMaterialTab : "Metal: AL/SST";
       const material = prompt("請輸入 Material 類別 (例如 Metal: AL/SST, Graphite 等)：", defaultMat);
       if (!material) return;
@@ -1223,10 +1224,7 @@
     const importFileInput = document.getElementById('import-file-input');
 
     importBtn.onclick = () => {
-      if (!auth.currentUser) {
-        alert("權限不足：必須登入管理員帳號才能匯入備份！");
-        return;
-      }
+      if (!auth.currentUser) return;
       importFileInput.click();
     };
 
@@ -1284,10 +1282,7 @@
     const importExcelInput = document.getElementById('import-excel-input');
 
     importExcelBtn.onclick = () => {
-      if (!auth.currentUser) {
-        alert("權限不足：必須登入管理員帳號才能匯入 Excel！");
-        return;
-      }
+      if (!auth.currentUser) return;
       importExcelInput.click();
     };
 
@@ -1376,10 +1371,7 @@
     };
 
     document.getElementById('reset-btn').onclick = () => {
-      if (!auth.currentUser) {
-        alert("權限不足：必須登入管理員帳號才能重置資料！");
-        return;
-      }
+      if (!auth.currentUser) return;
 
       if (confirm("警告：這將會清除雲端上的所有修改，恢復成預設數值與預設欄位！確定要重置嗎？")) {
         roadmapData = [...initialData];
